@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name" translatable="false">Price List</string>
+    <string name="listButtonText">Переглянути прайс</string>
+    <string name="updatePriceText">Оновити прайс</string>
+    <string name="updateButtonText">Оновити</string>
+    <string name="linkTextEditHint">Посилання на файл</string>
+    <string name="toastLinkEmptyText">Текстове поле порожнє</string>
+    <string name="toastWrongLinkText">Вибачте, посилання не правильне!</string>
+    <string name="toastUnkownOrNoInternetText">Вибачте, відстунє підключення до серверу!</string>
+    <string name="toastDownloadSuccesful">Початок завантаження!</string>
+    <string name="toastReadingFileText">Увага! Зчитуємо великий файл!</string>
+</resources>

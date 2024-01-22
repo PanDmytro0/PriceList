@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="listButtonText">посмотрєть прайс</string>
+    <string name="updatePriceText">оновить прайс</string>
+    <string name="updateButtonText">оновить</string>
+    <string name="linkTextEditHint">линк на файл</string>
+    <string name="toastLinkEmptyText">тексовоє поле пустоє</string>
+    <string name="toastWrongLinkText">сорє, линк нє верній</string>
+    <string name="toastUnkownOrNoInternetText">Нєту подключенія к сєрвєру</string>
+    <string name="toastDownloadSuccesful">старт скачіванія</string>
+    <string name="toastReadingFileText">вніманіє чітаєм огромній файл</string>
+</resources>
