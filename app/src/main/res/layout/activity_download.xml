@@ -41,9 +41,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:text="https://fastupload.io/AkwAQe5bnrkbMa7/file"
             android:textColor="@color/white" />
     </com.google.android.material.textfield.TextInputLayout>
+
+<!--                android:text="https://fastupload.io/eRlUIRUUTjk4f9m/file"
+-->
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/updatePriceButton"
