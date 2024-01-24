@@ -45,6 +45,11 @@ import java.net.UnknownHostException;
 import java.util.Map;
 
 public class ListActivity extends AppCompatActivity {
+
+    private static final int MAX_ELEMENTS_PER_ROW = 5;
+    private int currentElementCount = 0;
+    private LinearLayout currentRowLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,21 +64,23 @@ public class ListActivity extends AppCompatActivity {
 
             LinearLayout parentLayout = findViewById(R.id.parentLayout);
 
-            for (Row row : sheet) {
+            createNewRow(parentLayout);
 
+            for (Row row : sheet) {
                 String name = getCellValueAsString(row.getCell(0));
                 String dataN = getCellValueAsString(row.getCell(13));
 
-//                Log.d("tag", getCellValueAsString(row.getCell(12)).toString());
-
                 if (!name.contains("Назва") && !name.contains("Прайс") && !name.equals("")) {
-
                     String photoLink = getCellValueAsString(row.getCell(1));
                     String count = getCellValueAsString(row.getCell(4));
                     String inPack = getCellValueAsString(row.getCell(6));
                     String description = getCellValueAsString(row.getCell(12));
 
                     addCardToView(name, photoLink, count, inPack, parentLayout, description);
+
+                    if (++currentElementCount >= MAX_ELEMENTS_PER_ROW) {
+                        createNewRow(parentLayout);
+                    }
                 }
 
                 if (!dataN.equals("")) {
@@ -86,6 +93,20 @@ public class ListActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    private void createNewRow(LinearLayout parentLayout) {
+        currentRowLayout = new LinearLayout(ListActivity.this);
+        currentRowLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        currentRowLayout.setOrientation(LinearLayout.VERTICAL);
+        parentLayout.addView(currentRowLayout);
+
+        // Reset the counter for the new row
+        currentElementCount = 0;
+    }
+
 
     public void addCardToView(String photoLink, LinearLayout parentLayout) {
         CardView mCard = new CardView(ListActivity.this);
@@ -115,12 +136,15 @@ public class ListActivity extends AppCompatActivity {
         mImageView.setScaleType(ImageView.ScaleType.CENTER);
         mImageView.setLayoutParams(imageParams);
 
-        Glide.with(ListActivity.this).load(photoLink).into(mImageView);
+        Log.d("ImageLink", photoLink);
+        Glide.with(ListActivity.this).load(photoLink).override(600, 600).into(mImageView);
 
         insideCardLayout.addView(mImageView);
         mCard.addView(insideCardLayout);
-        parentLayout.addView(mCard);
+
+        currentRowLayout.addView(mCard);
     }
+
 
     public void addCardToView(String name, String photoLink, String count, String inPack, LinearLayout parentLayout, String description) {
         CardView mCard = new CardView(ListActivity.this);
@@ -150,7 +174,7 @@ public class ListActivity extends AppCompatActivity {
         mImageView.setScaleType(ImageView.ScaleType.CENTER);
         mImageView.setLayoutParams(imageParams);
 
-        Glide.with(ListActivity.this).load(photoLink).into(mImageView);
+        Glide.with(ListActivity.this).load(photoLink).override(600, 600).into(mImageView);
 
         TextView mText = new TextView(ListActivity.this);
         mText.setTextSize(dpToPx(10));
@@ -185,8 +209,11 @@ public class ListActivity extends AppCompatActivity {
         insideCardLayout.addView(mText);
         insideCardLayout.addView(descriptionText);
         mCard.addView(insideCardLayout);
-        parentLayout.addView(mCard);
+
+        // Add the card to the current row layout
+        currentRowLayout.addView(mCard);
     }
+
     private int dpToPx(int dp) {
         float density = getResources().getDisplayMetrics().density;
         return Math.round((float) dp * density);
