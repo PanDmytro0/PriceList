@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 
@@ -42,13 +43,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class ListActivity extends AppCompatActivity {
 
-    private static final int MAX_ELEMENTS_PER_ROW = 5;
-    private int currentElementCount = 0;
-    private LinearLayout currentRowLayout;
+    private static final int MAX_ELEMENTS_PER_FRAGMENT = 10;
+    private ViewPager2 viewPager;
+    private MyFragmentPagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +64,12 @@ public class ListActivity extends AppCompatActivity {
             Workbook workbook = WorkbookFactory.create(fileInputStream);
             Sheet sheet = workbook.getSheetAt(1);
 
-            LinearLayout parentLayout = findViewById(R.id.parentLayout);
+            viewPager = findViewById(R.id.viewPager);
+            adapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), getLifecycle());
+            viewPager.setAdapter(adapter);
 
-            createNewRow(parentLayout);
+            ArrayList<MyData> arrayList = new ArrayList<>();
+            int itemCount = 0;
 
             for (Row row : sheet) {
                 String name = getCellValueAsString(row.getCell(0));
@@ -76,147 +81,44 @@ public class ListActivity extends AppCompatActivity {
                     String inPack = getCellValueAsString(row.getCell(6));
                     String description = getCellValueAsString(row.getCell(12));
 
-                    addCardToView(name, photoLink, count, inPack, parentLayout, description);
+                    MyData myData = new MyData(name, photoLink, count, inPack, description);
+                    arrayList.add((MyData) myData.clone());
+                    itemCount++;
 
-                    if (++currentElementCount >= MAX_ELEMENTS_PER_ROW) {
-                        createNewRow(parentLayout);
+                    if (itemCount == MAX_ELEMENTS_PER_FRAGMENT) {
+                        addFragmentAndUpdateAdapter(arrayList);
+                        arrayList.clear();
+                        itemCount = 0;
                     }
                 }
 
                 if (!dataN.equals("")) {
-                    addCardToView(dataN, parentLayout);
+                    arrayList.add(new MyData(dataN));
+                    itemCount++;
+
+                    if (itemCount == MAX_ELEMENTS_PER_FRAGMENT) {
+                        addFragmentAndUpdateAdapter(arrayList);
+                        arrayList.clear();
+                        itemCount = 0;
+                    }
                 }
+            }
+
+            if (!arrayList.isEmpty()) {
+                addFragmentAndUpdateAdapter(arrayList);
             }
 
             workbook.close();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    private void createNewRow(LinearLayout parentLayout) {
-        currentRowLayout = new LinearLayout(ListActivity.this);
-        currentRowLayout.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        ));
-        currentRowLayout.setOrientation(LinearLayout.VERTICAL);
-        parentLayout.addView(currentRowLayout);
-
-        // Reset the counter for the new row
-        currentElementCount = 0;
-    }
-
-
-    public void addCardToView(String photoLink, LinearLayout parentLayout) {
-        CardView mCard = new CardView(ListActivity.this);
-        LinearLayout.LayoutParams mCardParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        mCardParams.setMargins(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16));
-        mCard.setLayoutParams(mCardParams);
-        mCard.setRadius(dpToPx(22));
-        mCard.setCardElevation(dpToPx(4));
-        mCard.setContentPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16));
-
-        LinearLayout insideCardLayout = new LinearLayout(ListActivity.this);
-        insideCardLayout.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        ));
-        insideCardLayout.setOrientation(LinearLayout.VERTICAL);
-
-        ImageView mImageView = new ImageView(ListActivity.this);
-        LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                dpToPx(200)
-        );
-        imageParams.setMargins(dpToPx(20), dpToPx(16), dpToPx(20), dpToPx(16));
-        mImageView.setScaleType(ImageView.ScaleType.CENTER);
-        mImageView.setLayoutParams(imageParams);
-
-        Log.d("ImageLink", photoLink);
-        Glide.with(ListActivity.this).load(photoLink).override(600, 600).into(mImageView);
-
-        insideCardLayout.addView(mImageView);
-        mCard.addView(insideCardLayout);
-
-        currentRowLayout.addView(mCard);
-    }
-
-
-    public void addCardToView(String name, String photoLink, String count, String inPack, LinearLayout parentLayout, String description) {
-        CardView mCard = new CardView(ListActivity.this);
-        LinearLayout.LayoutParams mCardParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        mCardParams.setMargins(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16));
-        mCard.setLayoutParams(mCardParams);
-        mCard.setRadius(dpToPx(22));
-        mCard.setCardElevation(dpToPx(4));
-        mCard.setContentPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16));
-
-        LinearLayout insideCardLayout = new LinearLayout(ListActivity.this);
-        insideCardLayout.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        ));
-        insideCardLayout.setOrientation(LinearLayout.VERTICAL);
-
-        ImageView mImageView = new ImageView(ListActivity.this);
-        LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                dpToPx(200)
-        );
-        imageParams.setMargins(dpToPx(20), dpToPx(16), dpToPx(20), dpToPx(16));
-        mImageView.setScaleType(ImageView.ScaleType.CENTER);
-        mImageView.setLayoutParams(imageParams);
-
-        Glide.with(ListActivity.this).load(photoLink).override(600, 600).into(mImageView);
-
-        TextView mText = new TextView(ListActivity.this);
-        mText.setTextSize(dpToPx(10));
-        mText.setText(name);
-        Typeface customFont = ResourcesCompat.getFont(ListActivity.this, R.font.marmelad);
-        mText.setTypeface(customFont);
-        mText.setGravity(Gravity.CENTER);
-
-        TextView emailText = new TextView(ListActivity.this);
-        emailText.setTextColor(getResources().getColor(R.color.textColor));
-        emailText.setTextSize(dpToPx(10));
-        emailText.setText(count);
-        emailText.setTypeface(customFont);
-        emailText.setGravity(Gravity.CENTER);
-
-        TextView dateText = new TextView(ListActivity.this);
-        dateText.setTextColor(getResources().getColor(R.color.textColor));
-        dateText.setTextSize(dpToPx(10));
-        dateText.setText(inPack);
-        dateText.setTypeface(customFont);
-        dateText.setGravity(Gravity.CENTER);
-
-        TextView descriptionText = new TextView(ListActivity.this);
-        descriptionText.setTextSize(dpToPx(10));
-        descriptionText.setText(description);
-        descriptionText.setTypeface(customFont);
-        descriptionText.setGravity(Gravity.CENTER);
-
-        insideCardLayout.addView(mImageView);
-        insideCardLayout.addView(emailText);
-        insideCardLayout.addView(dateText);
-        insideCardLayout.addView(mText);
-        insideCardLayout.addView(descriptionText);
-        mCard.addView(insideCardLayout);
-
-        // Add the card to the current row layout
-        currentRowLayout.addView(mCard);
-    }
-
-    private int dpToPx(int dp) {
-        float density = getResources().getDisplayMetrics().density;
-        return Math.round((float) dp * density);
+    private void addFragmentAndUpdateAdapter(ArrayList<MyData> arrayList) {
+        adapter.addFragment(new ListFragment(new ArrayList<>(arrayList))); // Create a new ArrayList to avoid modifying the existing one
+        Log.d("log", "added the fragment");
     }
 
     private String getCellValueAsString(Cell cell) {

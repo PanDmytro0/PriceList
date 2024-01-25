@@ -9,4 +9,6 @@
     <string name="toastUnkownOrNoInternetText">Вибачте, відстунє підключення до серверу!</string>
     <string name="toastDownloadSuccesful">Початок завантаження!</string>
     <string name="toastReadingFileText">Увага! Зчитуємо великий файл!</string>
+    <string name="buttonTextOpenDetails">Відкрити повністю</string>
+
 </resources>
