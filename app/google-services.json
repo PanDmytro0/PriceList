@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "151915876828",
+    "project_id": "somephingg",
+    "storage_bucket": "somephingg.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:151915876828:android:b1334176f84f9caeae7f19",
+        "android_client_info": {
+          "package_name": "com.fernfog.pricelist"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0OKBktiW0QcNCAAUoW6SY3eXqgo4uJCQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
