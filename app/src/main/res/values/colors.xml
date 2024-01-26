@@ -7,6 +7,7 @@
     <color name="tintColor">#7077A1</color>
     <color name="bgColor">#424769</color>
     <color name="someColor">#2D3250</color>
+    <color name="transparentColor">#00FFFFFF</color>
 
 
 </resources>

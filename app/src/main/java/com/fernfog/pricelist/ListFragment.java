@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -71,6 +72,7 @@ public class ListFragment extends Fragment {
         mCard.setRadius(dpToPx(22));
         mCard.setCardElevation(dpToPx(4));
         mCard.setContentPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16));
+        mCardParams.gravity = Gravity.CENTER;
 
         LinearLayout insideCardLayout = new LinearLayout(getContext());
         insideCardLayout.setLayoutParams(new LinearLayout.LayoutParams(
@@ -79,20 +81,10 @@ public class ListFragment extends Fragment {
         ));
         insideCardLayout.setOrientation(LinearLayout.VERTICAL);
 
-        ImageView mImageView = new ImageView(getContext());
-        mImageView.setScaleType(ImageView.ScaleType.CENTER);
-
-        Glide.with(getContext()).load(photoLink).override(200, 200).into(mImageView);
-        Typeface customFont = ResourcesCompat.getFont(getContext(), R.font.marmelad);
-
-        MaterialButton materialButton = new MaterialButton(getContext());
-        materialButton.setCornerRadius(dpToPx(8));
-        materialButton.setBackgroundColor(getResources().getColor(R.color.tintColor));
-        materialButton.setTypeface(customFont);
-        materialButton.setTextSize(dpToPx(3));
-        materialButton.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(100), dpToPx(40)));
-        materialButton.setText(getString(R.string.buttonTextOpenDetails));
-        materialButton.setOnClickListener(new View.OnClickListener() {
+        ImageButton imageButton = new ImageButton(getContext());
+        imageButton.setScaleType(ImageView.ScaleType.CENTER);
+        imageButton.setBackgroundColor(getResources().getColor(R.color.transparentColor));
+        imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), DetailedActivity.class);
@@ -102,8 +94,9 @@ public class ListFragment extends Fragment {
             }
         });
 
-        insideCardLayout.addView(mImageView);
-        insideCardLayout.addView(materialButton);
+        Glide.with(getContext()).load(photoLink).override(400, 400).into(imageButton);
+
+        insideCardLayout.addView(imageButton);
         mCard.addView(insideCardLayout);
         parentLayout.addView(mCard);
     }
@@ -120,6 +113,7 @@ public class ListFragment extends Fragment {
         mCard.setRadius(dpToPx(22));
         mCard.setCardElevation(dpToPx(4));
         mCard.setContentPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16));
+        mCardParams.gravity = Gravity.CENTER;
 
         LinearLayout insideCardLayout = new LinearLayout(getContext());
         insideCardLayout.setLayoutParams(new LinearLayout.LayoutParams(
@@ -128,35 +122,10 @@ public class ListFragment extends Fragment {
         ));
         insideCardLayout.setOrientation(LinearLayout.VERTICAL);
 
-        ImageView mImageView = new ImageView(getContext());
-        mImageView.setScaleType(ImageView.ScaleType.CENTER);
-
-        Glide.with(getContext()).load(photoLink).override(200, 200).into(mImageView);
-
-        TextView mText = new TextView(getContext());
-        mText.setTextSize(dpToPx(3));
-        mText.setText(name);
-        Typeface customFont = ResourcesCompat.getFont(getContext(), R.font.marmelad);
-        mText.setTypeface(customFont);
-        mText.setGravity(Gravity.CENTER);
-
-
-        TextView dateText = new TextView(getContext());
-        dateText.setTextColor(getResources().getColor(R.color.textColor));
-        dateText.setTextSize(dpToPx(3));
-        dateText.setText(inPack  + "/" + count);
-        dateText.setTypeface(customFont);
-        dateText.setGravity(Gravity.CENTER);
-
-        MaterialButton materialButton = new MaterialButton(getContext());
-        materialButton.setCornerRadius(dpToPx(8));
-        materialButton.setBackgroundColor(getResources().getColor(R.color.tintColor));
-        materialButton.setTypeface(customFont);
-        materialButton.setTextSize(dpToPx(3));
-        materialButton.setLayoutParams(new LinearLayout.LayoutParams(dpToPx(100), dpToPx(40)));
-        materialButton.setText(getString(R.string.buttonTextOpenDetails));
-
-        materialButton.setOnClickListener(new View.OnClickListener() {
+        ImageButton imageButton = new ImageButton(getContext());
+        imageButton.setScaleType(ImageView.ScaleType.CENTER);
+        imageButton.setBackgroundColor(getResources().getColor(R.color.transparentColor));
+        imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), DetailedActivity.class);
@@ -170,14 +139,27 @@ public class ListFragment extends Fragment {
             }
         });
 
+        Glide.with(getContext()).load(photoLink).override(400, 400).into(imageButton);
 
-        insideCardLayout.addView(mImageView);
+        TextView mText = new TextView(getContext());
+        mText.setTextSize(dpToPx(12));
+        mText.setText(name);
+        Typeface customFont = ResourcesCompat.getFont(getContext(), R.font.marmelad);
+        mText.setTypeface(customFont);
+        mText.setGravity(Gravity.CENTER);
+
+        TextView dateText = new TextView(getContext());
+        dateText.setTextColor(getResources().getColor(R.color.textColor));
+        dateText.setTextSize(dpToPx(12));
+        dateText.setText(inPack  + "/" + count);
+        dateText.setTypeface(customFont);
+        dateText.setGravity(Gravity.CENTER);
+
+        insideCardLayout.addView(imageButton);
         insideCardLayout.addView(dateText);
         insideCardLayout.addView(mText);
-        insideCardLayout.addView(materialButton);
         mCard.addView(insideCardLayout);
 
-        // Add the card to the current row layout
         parentLayout.addView(mCard);
     }
 

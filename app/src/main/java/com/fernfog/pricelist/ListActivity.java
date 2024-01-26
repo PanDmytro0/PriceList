@@ -75,6 +75,12 @@ public class ListActivity extends AppCompatActivity {
                 String name = getCellValueAsString(row.getCell(0));
                 String dataN = getCellValueAsString(row.getCell(13));
 
+                if (name.equals("") && itemCount > 1) {
+                        addFragmentAndUpdateAdapter(arrayList);
+                        arrayList.clear();
+                        itemCount = 0;
+                }
+
                 if (!name.contains("Назва") && !name.contains("Прайс") && !name.equals("")) {
                     String photoLink = getCellValueAsString(row.getCell(1));
                     String count = getCellValueAsString(row.getCell(4));

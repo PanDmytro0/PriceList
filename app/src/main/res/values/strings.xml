@@ -3,7 +3,7 @@
     <string name="listButtonText">Переглянути прайс</string>
     <string name="updatePriceText">Оновити прайс</string>
     <string name="updateButtonText">Оновити</string>
-    <string name="linkTextEditHint">Посилання на файл</string>
+    <string name="linkTextEditHint">Назва файлу</string>
     <string name="toastLinkEmptyText">Текстове поле порожнє</string>
     <string name="toastWrongLinkText">Вибачте, посилання не правильне!</string>
     <string name="toastUnkownOrNoInternetText">Вибачте, відстунє підключення до серверу!</string>
