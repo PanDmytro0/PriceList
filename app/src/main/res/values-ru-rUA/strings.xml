@@ -9,4 +9,5 @@
     <string name="toastDownloadSuccesful">Начало загрузки!</string>
     <string name="toastReadingFileText">Внимание! Чтение большого файла!</string>
     <string name="buttonTextOpenDetails">Открыть полностью</string>
+    <string name="toastOutOfMemory">Out of memory</string>
 </resources>

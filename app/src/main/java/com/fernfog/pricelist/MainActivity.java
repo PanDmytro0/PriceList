@@ -14,15 +14,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.android.material.button.MaterialButton;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
-import java.io.File;
-import java.io.IOException;
-
 public class MainActivity extends AppCompatActivity {
 
 

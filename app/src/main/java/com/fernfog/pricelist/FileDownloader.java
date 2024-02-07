@@ -17,7 +17,7 @@ public class FileDownloader {
 
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(fileUrl));
 
-        request.setTitle("Downloading: " + fileName);
+        request.setTitle(fileName);
 
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
 

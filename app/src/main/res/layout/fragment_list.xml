@@ -9,18 +9,14 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
                 <GridLayout
                     android:id="@+id/parentLayout"
                     android:rowCount="5"
                     android:columnCount="2"
-                    android:orientation="vertical"
-                    android:layout_gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
-
         </androidx.core.widget.NestedScrollView>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

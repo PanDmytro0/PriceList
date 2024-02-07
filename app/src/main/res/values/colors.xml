@@ -4,6 +4,8 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="textColor">#F6B17A</color>
+    <color name="textColorOPT">#7AF67C</color>
+    <color name="textColorOPT2">#F65656</color>
     <color name="tintColor">#7077A1</color>
     <color name="bgColor">#424769</color>
     <color name="someColor">#2D3250</color>

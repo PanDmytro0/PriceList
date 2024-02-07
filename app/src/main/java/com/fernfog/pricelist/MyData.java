@@ -7,6 +7,8 @@ public class MyData implements Cloneable {
     String inPack;
     String description;
     String name;
+    boolean isOPT;
+    boolean isOIOD;
 
     MyData(String name, String photoLink, String count, String inPack, String description) {
         this.name = name;
@@ -14,6 +16,16 @@ public class MyData implements Cloneable {
         this.count = count;
         this.inPack = inPack;
         this.description = description;
+    }
+
+    MyData(String name, String photoLink, String count, String inPack, String description, boolean isOPT, boolean isOIOD) {
+        this.name = name;
+        this.photoLink = photoLink;
+        this.count = count;
+        this.inPack = inPack;
+        this.description = description;
+        this.isOPT = isOPT;
+        this.isOIOD = isOIOD;
     }
 
     MyData(String photoLink) {
