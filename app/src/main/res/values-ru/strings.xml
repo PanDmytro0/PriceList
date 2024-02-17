@@ -10,4 +10,10 @@
     <string name="toastReadingFileText">Внимание! Чтение большого файла!</string>
     <string name="buttonTextOpenDetails">Открыть полностью</string>
     <string name="toastOutOfMemory">Out of memory</string>
+    <string name="updateTokenText">Оновить токен</string>
+    <string name="token">Токен</string>
+    <string name="openLinkButton">Відкрити посилання</string>
+    <string name="errorText">Вибачте, виникла помилка!</string>
+    <string name="successUpdatedTokenText">Токен успішно оновлено!</string>
+    <string name="tokenRequiredText">Потрібен токен!</string>
 </resources>

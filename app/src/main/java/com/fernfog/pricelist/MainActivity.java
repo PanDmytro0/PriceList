@@ -22,10 +22,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
         }
 
         findViewById(R.id.updateButton).setOnClickListener(new View.OnClickListener() {
@@ -40,6 +40,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this, getString(R.string.toastReadingFileText), Toast.LENGTH_LONG).show();
                 startActivity(new Intent(MainActivity.this, ListActivity.class));
+            }
+        });
+
+        findViewById(R.id.updateTokenButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, UpdateTokenActivity.class));
             }
         });
     }

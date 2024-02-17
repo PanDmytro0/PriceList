@@ -1,9 +1,12 @@
 package com.fernfog.pricelist;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 import androidx.core.content.res.ResourcesCompat;
@@ -62,21 +66,29 @@ public class ListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view;
+        SharedPreferences sharedPref = requireContext().getSharedPreferences(
+                "MyPref", Context.MODE_PRIVATE);
+        config = new DbxRequestConfig("dropbox/Price1998");
+        String stringggToken = sharedPref.getString("token", "none");
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
                 try {
-                    config = new DbxRequestConfig("dropbox/Price1998");
-                    client = new DbxClientV2(config, "sl.BvIh2t0MkxS7-7p06-k90EBAIihL5dvzBMdRH_-dTCc33bzRHFNGxi32-mPfBWCTlkuGNoNShzW71A_VHOlie0MglAmZT8gfqrn0AzDbaL83Fo1mTUfu8a-gPTUok24M0YFMc9vNToC7k8HNdCcehF4");
+                    if (!stringggToken.equals("none")) {
+                        client = new DbxClientV2(config, stringggToken);
 
-                    DbxUserUsersRequests r1 = client.users();
-                    FullAccount account = r1.getCurrentAccount();
+                        DbxUserUsersRequests r1 = client.users();
+                        FullAccount account = r1.getCurrentAccount();
 
-                    Log.wtf("WTF", account.getName().getDisplayName());
+                        Log.wtf("WTF", account.getName().getDisplayName());
+                    } else {
+                        Toast.makeText(requireContext(), getString(R.string.tokenRequiredText), Toast.LENGTH_LONG).show();
+                    }
                 } catch (DbxException ex1) {
                     ex1.printStackTrace();
+                } catch (NullPointerException ex2) {
+                    ex2.printStackTrace();
                 }
-
 
                 return null;
             }
@@ -109,8 +121,6 @@ public class ListFragment extends Fragment {
         mCard.setCardElevation(dpToPx(4));
         mCard.setContentPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16));
 
-
-
         LinearLayout insideCardLayout = new LinearLayout(requireContext());
         insideCardLayout.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -124,6 +134,7 @@ public class ListFragment extends Fragment {
         imageButton.setLayoutParams(params);
         imageButton.setScaleType(ImageView.ScaleType.CENTER);
         imageButton.setBackgroundColor(getResources().getColor(R.color.transparentColor));
+
         imageButton.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), DetailedActivity.class);
             intent.putExtra("photoLink", myData.getPhotoLink());
@@ -135,35 +146,60 @@ public class ListFragment extends Fragment {
             startActivity(intent);
         });
 
-        new AsyncTask<Void, Void, byte[]>() {
-            @Override
-            protected byte[] doInBackground(Void... voids) {
-                try {
-                    String dropboxFileName = "/image/" + myData.photoLink + ".jpg";
+        File photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), myData.photoLink + ".jpg");
 
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    DbxDownloader<FileMetadata> downloader = client.files().download(dropboxFileName);
-                    downloader.download(outputStream);
+        if (photo.exists()) {
+            Glide.with(requireContext())
+                    .load(photo)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
+                    .into(imageButton);
+        } else {
+            new AsyncTask<Void, Void, byte[]>() {
+                @Override
+                protected byte[] doInBackground(Void... voids) {
+                    try {
+                        String dropboxFileName = "/image/" + myData.photoLink + ".jpg";
 
-                    return outputStream.toByteArray();
+                        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                        DbxDownloader<FileMetadata> downloader = client.files().download(dropboxFileName);
+                        downloader.download(outputStream);
 
-                } catch (DbxException | IOException e) {
-                    e.printStackTrace();
-                    return null;
+                        byte[] photoo = outputStream.toByteArray();
+
+                        try {
+                            FileOutputStream fos = new FileOutputStream(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), myData.photoLink + ".jpg"));
+
+                            fos.write(photoo);
+                            fos.close();
+                        }
+                        catch (java.io.IOException e) {
+                            Log.e("PictureDemo", "Exception in photoCallback", e);
+                        }
+
+                        return photoo;
+
+                    } catch (DbxException | IOException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
                 }
-            }
 
-            @Override
-            protected void onPostExecute(byte[] fileData) {
-                if (fileData != null && isAdded()) {
-                    Glide.with(requireContext())
-                            .load(fileData)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
-                            .into(imageButton);
+                @Override
+                protected void onPostExecute(byte[] fileData) {
+                    try {
+                        Glide.with(requireContext())
+                                .load(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), myData.photoLink + ".jpg"))
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
+                                .into(imageButton);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        }.execute();
+            }.execute();
+        }
 
         TextView mText = new TextView(requireContext());
         mText.setTextSize(dpToPx(12));

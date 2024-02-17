@@ -43,10 +43,23 @@
         style="@style/MyButton"
         android:text="@string/updatePriceText"
 
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/updateTokenButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/viewButton" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/updateTokenButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        style="@style/MyButton"
+        android:text="@string/updateTokenText"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/updateButton" />
 
 
 
