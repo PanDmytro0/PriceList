@@ -1,5 +1,6 @@
 package com.fernfog.pricelist;
 
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -7,6 +8,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -62,6 +65,8 @@ public class ListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ListActivity.this);
+
         try {
             Workbook workbook = WorkbookFactory.create(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "price.xlsm"));
             Sheet sheet = workbook.getSheetAt(0);
@@ -69,6 +74,22 @@ public class ListActivity extends AppCompatActivity {
             viewPager = findViewById(R.id.viewPager);
             adapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), getLifecycle());
             viewPager.setAdapter(adapter);
+
+            viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                @Override
+                public void onPageSelected(int position) {
+                    int delay = Integer.parseInt(sharedPreferences.getString("delayOfViewPager", "1")) * 1000;
+
+                    viewPager.setUserInputEnabled(false);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            viewPager.setUserInputEnabled(true);
+                        }
+                    }, delay);
+                }
+            });
+
 
             ArrayList<MyData> arrayList = new ArrayList<>();
             int itemCount = 0;

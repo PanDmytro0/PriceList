@@ -28,6 +28,13 @@ public class MainActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
         }
 
+        findViewById(R.id.changeSizeButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, ChangeSizeActivity.class));
+            }
+        });
+
         findViewById(R.id.updateButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

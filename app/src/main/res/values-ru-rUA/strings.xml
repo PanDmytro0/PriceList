@@ -9,11 +9,17 @@
     <string name="toastDownloadSuccesful">Начало загрузки!</string>
     <string name="toastReadingFileText">Внимание! Чтение большого файла!</string>
     <string name="buttonTextOpenDetails">Открыть полностью</string>
-    <string name="toastOutOfMemory">Out of memory</string>
-    <string name="updateTokenText">Оновить токен</string>
+    <string name="toastOutOfMemory">Недостаточно памяти</string>
+    <string name="updateTokenText">Обновить токен</string>
     <string name="token">Токен</string>
-    <string name="openLinkButton">Відкрити посилання</string>
-    <string name="errorText">Вибачте, виникла помилка!</string>
-    <string name="successUpdatedTokenText">Токен успішно оновлено!</string>
-    <string name="tokenRequiredText">Потрібен токен!</string>
+    <string name="openLinkButton">Открыть ссылку</string>
+    <string name="errorText">Извините, произошла ошибка!</string>
+    <string name="successUpdatedTokenText">Токен успешно обновлен!</string>
+    <string name="tokenRequiredText">Требуется токен!</string>
+    <string name="changeSizeText">Изменить размер</string>
+    <string name="fontPreferencesText">Размер шрифта</string>
+    <string name="imagePreferencesText">Размер изображения</string>
+    <string name="cardPreviewPrecerencesText">Размер маленькой карточки</string>
+    <string name="cardFullPreferencesText">Размер полной карточки</string>
+    <string name="delayOfViewPager">Задержка в просмотрщике страниц</string>
 </resources>

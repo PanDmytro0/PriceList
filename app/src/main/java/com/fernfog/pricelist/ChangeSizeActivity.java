@@ -10,5 +10,7 @@ public class ChangeSizeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_size);
+
+        getFragmentManager().beginTransaction().add(R.id.idFrameLayout, new SettingsFragment()).commit();
     }
 }

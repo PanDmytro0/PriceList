@@ -17,5 +17,11 @@
     <string name="errorText">Вибачте, виникла помилка!</string>
     <string name="successUpdatedTokenText">Токен успішно оновлено!</string>
     <string name="tokenRequiredText">Потрібен токен!</string>
+    <string name="changeSizeText">Змінити параметри</string>
+    <string name="fontPreferencesText">Розмір шрифту</string>
+    <string name="imagePreferencesText">Розмір картинки</string>
+    <string name="cardPreviewPrecerencesText">Розміри малої картки</string>
+    <string name="cardFullPreferencesText">Розмір картинки</string>
+    <string name="delayOfViewPager">Затримка перелистування</string>
 
 </resources>

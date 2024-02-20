@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -110,9 +111,10 @@ public class ListFragment extends Fragment {
     }
 
     private void addCardToView(MyData myData, GridLayout parentLayout) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
         CardView mCard = new CardView(requireContext());
         GridLayout.LayoutParams mCardParams = new GridLayout.LayoutParams();
-        mCardParams.width = dpToPx(310);
+        mCardParams.width = dpToPx(Integer.parseInt(sharedPreferences.getString("cardPreviewSize",  "310")));
         mCardParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         mCardParams.setMargins(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16));
         mCardParams.setGravity(Gravity.CENTER); // Center both horizontally and vertically within GridLayout
@@ -129,7 +131,7 @@ public class ListFragment extends Fragment {
         insideCardLayout.setOrientation(LinearLayout.VERTICAL);
 
         ImageButton imageButton = new ImageButton(requireContext());
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dpToPx(100), dpToPx(100));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dpToPx(Integer.parseInt(sharedPreferences.getString("imageSize",  "100"))), dpToPx(Integer.parseInt(sharedPreferences.getString("imageSize",  "100"))));
         params.gravity = Gravity.CENTER;
         imageButton.setLayoutParams(params);
         imageButton.setScaleType(ImageView.ScaleType.CENTER);
@@ -145,7 +147,6 @@ public class ListFragment extends Fragment {
             intent.putExtra("action", false);
             startActivity(intent);
         });
-
         File photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), myData.photoLink + ".jpg");
 
         if (photo.exists()) {
@@ -202,7 +203,7 @@ public class ListFragment extends Fragment {
         }
 
         TextView mText = new TextView(requireContext());
-        mText.setTextSize(dpToPx(12));
+        mText.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize",  "12"))));
         mText.setText(myData.getName());
         Typeface customFont = ResourcesCompat.getFont(requireContext(), R.font.marmelad);
         mText.setTypeface(customFont);
@@ -210,17 +211,21 @@ public class ListFragment extends Fragment {
 
         TextView dateText = new TextView(requireContext());
         dateText.setTextColor(getResources().getColor(R.color.textColor));
-        dateText.setTextSize(dpToPx(12));
+        dateText.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize",  "12"))));
         dateText.setText(myData.getInPack() + "/" + myData.getCount());
         dateText.setTypeface(customFont);
         dateText.setGravity(Gravity.RIGHT);
 
         insideCardLayout.addView(mText);
+
+
         insideCardLayout.addView(imageButton);
+
+
         if (myData.isOPT){
             dateText.setTextColor(getResources().getColor(R.color.textColorOPT));
             TextView mTex = new TextView(requireContext());
-            mTex.setTextSize(dpToPx(6));
+            mTex.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize",  "12")) / 2));
             mTex.setText("Опт ціна від ящ");
             mTex.setTypeface(customFont);
             mTex.setGravity(Gravity.RIGHT);
@@ -245,8 +250,6 @@ public class ListFragment extends Fragment {
 
         mCard.addView(insideCardLayout);
         parentLayout.addView(mCard);
-
-
     }
 
     private int dpToPx(int dp) {

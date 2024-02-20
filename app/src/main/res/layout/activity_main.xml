@@ -30,10 +30,23 @@
         style="@style/MyButton"
         android:text="@string/listButtonText"
 
-        app:layout_constraintBottom_toTopOf="@id/updateButton"
+        app:layout_constraintBottom_toTopOf="@id/changeSizeButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/helloText" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/changeSizeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        style="@style/MyButton"
+        android:text="@string/changeSizeText"
+
+        app:layout_constraintBottom_toTopOf="@id/updateButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/viewButton" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/updateButton"
@@ -46,7 +59,7 @@
         app:layout_constraintBottom_toTopOf="@id/updateTokenButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/viewButton" />
+        app:layout_constraintTop_toBottomOf="@id/changeSizeButton" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/updateTokenButton"
