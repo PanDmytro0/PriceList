@@ -114,8 +114,8 @@ public class ListFragment extends Fragment {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
         CardView mCard = new CardView(requireContext());
         GridLayout.LayoutParams mCardParams = new GridLayout.LayoutParams();
-        mCardParams.width = dpToPx(Integer.parseInt(sharedPreferences.getString("cardPreviewSize",  "310")));
-        mCardParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        mCardParams.width = dpToPx(Integer.parseInt(sharedPreferences.getString("cardPreviewSizeW",  "310")));
+        mCardParams.height = dpToPx(Integer.parseInt(sharedPreferences.getString("cardPreviewSizeH",  "310")));
         mCardParams.setMargins(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16));
         mCardParams.setGravity(Gravity.CENTER); // Center both horizontally and vertically within GridLayout
         mCard.setLayoutParams(mCardParams);

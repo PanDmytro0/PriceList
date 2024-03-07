@@ -14,8 +14,12 @@
         android:key="imageSizeW" />
 
     <EditTextPreference
-        android:title="@string/cardPreviewPrecerencesText"
-        android:key="cardPreviewSize" />
+        android:title="@string/cardPreviewPrecerencesTextW"
+        android:key="cardPreviewSizeW" />
+
+    <EditTextPreference
+        android:title="@string/cardPreviewPrecerencesTextH"
+        android:key="cardPreviewSizeH" />
 
     <EditTextPreference
         android:title="@string/cardFullPreferencesText"

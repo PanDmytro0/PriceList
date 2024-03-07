@@ -30,4 +30,6 @@
     <string name="toastWrongPassword">Неправильный пароль!</string>
     <string name="groupModeButtonText">Режим групп</string>
     <string name="seeAllButtonText">Просмотреть все</string>
+    <string name="cardPreviewPrecerencesTextW">Ширина малої картки</string>
+    <string name="cardPreviewPrecerencesTextH">Висота малої картки</string>
 </resources>

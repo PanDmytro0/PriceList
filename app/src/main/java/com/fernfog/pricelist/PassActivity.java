@@ -34,7 +34,7 @@ public class PassActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (textInputLayout.getEditText().getText().toString().trim().equals(pass.trim())) {
-                    if (!getIntent().getStringExtra("group").equals("")) {
+                    if (getIntent().getStringExtra("group") != null) {
                         sendDataBackToActivityB();
                     } else {
                         startActivity(new Intent(PassActivity.this, ChangeSizeActivity.class));
