@@ -18,8 +18,16 @@
     <string name="tokenRequiredText">Требуется токен!</string>
     <string name="changeSizeText">Изменить размер</string>
     <string name="fontPreferencesText">Размер шрифта</string>
-    <string name="imagePreferencesText">Размер изображения</string>
+    <string name="imagePreferencesTextH">Высота картинки</string>
     <string name="cardPreviewPrecerencesText">Размер маленькой карточки</string>
     <string name="cardFullPreferencesText">Размер полной карточки</string>
     <string name="delayOfViewPager">Задержка в просмотрщике страниц</string>
+    <string name="passPrefText">Пароль</string>
+    <string name="enterPassText">Введите пароль</string>
+    <string name="toFirstText">На первую страницу</string>
+    <string name="toLastText">На последнюю страницу</string>
+    <string name="imagePreferencesTextW">Ширина картинки</string>
+    <string name="toastWrongPassword">Неправильный пароль!</string>
+    <string name="groupModeButtonText">Режим групп</string>
+    <string name="seeAllButtonText">Просмотреть все</string>
 </resources>

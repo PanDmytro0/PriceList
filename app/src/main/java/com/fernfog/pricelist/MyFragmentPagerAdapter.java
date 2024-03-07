@@ -31,4 +31,9 @@ public class MyFragmentPagerAdapter extends FragmentStateAdapter {
     public int getItemCount() {
         return fragmentList.size();
     }
+
+    public void removeAll() {
+        fragmentList.clear();
+        notifyDataSetChanged();
+    }
 }

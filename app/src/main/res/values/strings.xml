@@ -19,9 +19,17 @@
     <string name="tokenRequiredText">Потрібен токен!</string>
     <string name="changeSizeText">Змінити параметри</string>
     <string name="fontPreferencesText">Розмір шрифту</string>
-    <string name="imagePreferencesText">Розмір картинки</string>
+    <string name="imagePreferencesTextH">Висота картинки</string>
     <string name="cardPreviewPrecerencesText">Розміри малої картки</string>
-    <string name="cardFullPreferencesText">Розмір картинки</string>
+    <string name="cardFullPreferencesText">Розміри повної картки</string>
     <string name="delayOfViewPager">Затримка перелистування</string>
+    <string name="passPrefText">Пароль</string>
+    <string name="enterPassText">Введіть пароль</string>
+    <string name="toFirstText">На першу сторінку</string>
+    <string name="toLastText">На останню сторінку</string>
+    <string name="imagePreferencesTextW">Ширина картинки</string>
+    <string name="toastWrongPassword">Не вірний пароль!</string>
+    <string name="groupModeButtonText">Режим груп</string>
+    <string name="seeAllButtonText">Переглянути всі</string>
 
 </resources>

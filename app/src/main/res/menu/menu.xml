@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/toFirst"
+        android:title="@string/toFirstText"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/arrow_back_fill0_wght400_grad0_opsz24"
+        />
+
+    <item
+        android:id="@+id/toLast"
+        android:title="@string/toLastText"
+        android:icon="@drawable/arrow_forward_fill0_wght400_grad0_opsz24"
+        app:showAsAction="ifRoom"
+        />
+
+    <item
+        android:title="@string/groupModeButtonText"
+        android:id="@+id/toGroups"
+        app:showAsAction="ifRoom" />
+
+</menu>

@@ -131,10 +131,10 @@ public class ListFragment extends Fragment {
         insideCardLayout.setOrientation(LinearLayout.VERTICAL);
 
         ImageButton imageButton = new ImageButton(requireContext());
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dpToPx(Integer.parseInt(sharedPreferences.getString("imageSize",  "100"))), dpToPx(Integer.parseInt(sharedPreferences.getString("imageSize",  "100"))));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dpToPx(Integer.parseInt(sharedPreferences.getString("imageSizeW",  "100"))), dpToPx(Integer.parseInt(sharedPreferences.getString("imageSizeH",  "100"))));
         params.gravity = Gravity.CENTER;
+        imageButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         imageButton.setLayoutParams(params);
-        imageButton.setScaleType(ImageView.ScaleType.CENTER);
         imageButton.setBackgroundColor(getResources().getColor(R.color.transparentColor));
 
         imageButton.setOnClickListener(v -> {
@@ -212,12 +212,11 @@ public class ListFragment extends Fragment {
         TextView dateText = new TextView(requireContext());
         dateText.setTextColor(getResources().getColor(R.color.textColor));
         dateText.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize",  "12"))));
-        dateText.setText(myData.getInPack() + "/" + myData.getCount());
+        dateText.setText(myData.getCount() + "/" + myData.getInPack());
         dateText.setTypeface(customFont);
         dateText.setGravity(Gravity.RIGHT);
 
         insideCardLayout.addView(mText);
-
 
         insideCardLayout.addView(imageButton);
 

@@ -6,12 +6,24 @@
         android:key="fontSize" />
 
     <EditTextPreference
-        android:title="@string/imagePreferencesText"
-        android:key="imageSize" />
+        android:title="@string/imagePreferencesTextH"
+        android:key="imageSizeH" />
+
+    <EditTextPreference
+        android:title="@string/imagePreferencesTextW"
+        android:key="imageSizeW" />
 
     <EditTextPreference
         android:title="@string/cardPreviewPrecerencesText"
         android:key="cardPreviewSize" />
+
+    <EditTextPreference
+        android:title="@string/cardFullPreferencesText"
+        android:key="cardFullSize" />
+
+    <EditTextPreference
+        android:title="@string/passPrefText"
+        android:key="pass" />
 
     <EditTextPreference
         android:title="@string/delayOfViewPager"

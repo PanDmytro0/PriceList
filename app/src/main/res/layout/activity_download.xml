@@ -17,35 +17,10 @@
         android:textColor="@color/white"
         android:textSize="50dp"
 
-        app:layout_constraintBottom_toTopOf="@id/linkEditText"
+        app:layout_constraintBottom_toTopOf="@id/updatePriceButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/linkEditText"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/linkTextEditHint"
-
-        app:hintTextColor="@color/white"
-        android:textColorHint="@color/white"
-
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/helloText"
-        app:layout_constraintBottom_toTopOf="@id/updatePriceButton">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/linKEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            android:textColor="@color/white" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-<!--                android:text="https://fastupload.io/eRlUIRUUTjk4f9m/file"
--->
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/updatePriceButton"
@@ -57,7 +32,7 @@
 
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linkEditText"
+        app:layout_constraintTop_toBottomOf="@id/helloText"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

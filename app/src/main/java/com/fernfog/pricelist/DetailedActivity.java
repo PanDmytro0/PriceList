@@ -3,6 +3,7 @@ package com.fernfog.pricelist;
 import static java.security.AccessController.getContext;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -87,11 +89,16 @@ public class DetailedActivity extends AppCompatActivity {
         } else {
             setContentView(R.layout.activity_detailed_std);
 
+            CardView cardView = findViewById(R.id.cardddeded);
+            LinearLayout.LayoutParams paramsmsmsm = new LinearLayout.LayoutParams(dpToPx(Integer.parseInt(sharedPreferences.getString("cardFullSize", "500"))), ViewGroup.LayoutParams.WRAP_CONTENT);
+            paramsmsmsm.gravity = Gravity.CENTER;
+            cardView.setLayoutParams(paramsmsmsm);
+
             ImageView imageView = findViewById(R.id.imageee);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dpToPx(Integer.parseInt(sharedPreferences.getString("imageSize",  "100"))), dpToPx(Integer.parseInt(sharedPreferences.getString("imageSize",  "100"))));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dpToPx(Integer.parseInt(sharedPreferences.getString("imageSizeW",  "100")) * 5), dpToPx(Integer.parseInt(sharedPreferences.getString("imageSizeH",  "100")) * 5));
             params.gravity = Gravity.CENTER;
+            imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             imageView.setLayoutParams(params);
-            imageView.setScaleType(ImageView.ScaleType.CENTER);
             imageView.setBackgroundColor(getResources().getColor(R.color.transparentColor));
 
             TextView textView = findViewById(R.id.NameTextView);

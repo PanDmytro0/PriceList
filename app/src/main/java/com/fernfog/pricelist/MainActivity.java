@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.changeSizeButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, ChangeSizeActivity.class));
+                startActivity(new Intent(MainActivity.this, PassActivity.class));
             }
         });
 

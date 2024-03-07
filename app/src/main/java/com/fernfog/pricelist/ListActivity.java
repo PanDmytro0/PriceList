@@ -1,79 +1,66 @@
 package com.fernfog.pricelist;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.Menu;
+import android.view.MenuItem;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.core.content.res.ResourcesCompat;
+import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.dropbox.core.DbxException;
-import com.dropbox.core.DbxRequestConfig;
-import com.dropbox.core.v2.DbxClientV2;
-import com.dropbox.core.v2.files.FileMetadata;
 
-
-import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.HashSet;
 
 public class ListActivity extends AppCompatActivity {
 
     private static final int MAX_ELEMENTS_PER_FRAGMENT = 10;
     private ViewPager2 viewPager;
-    private MyFragmentPagerAdapter adapter;
+    private MyFragmentPagerAdapter defadapter;
+    public static final String ACTION_CUSTOM_BROADCAST = "com.example.ACTION_CUSTOM_BROADCAST";
+
+    public HashSet<String> groupSet = new HashSet<>();
+    SharedPreferences sharedPreferences;
+    Workbook workbook;
+    Sheet sheet;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ListActivity.this);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ListActivity.this);
+
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.topBar);
+        setSupportActionBar(myToolbar);
 
         try {
-            Workbook workbook = WorkbookFactory.create(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "price.xlsm"));
-            Sheet sheet = workbook.getSheetAt(0);
+            workbook = WorkbookFactory.create(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "price.xlsm"));
+            sheet = workbook.getSheetAt(0);
 
             viewPager = findViewById(R.id.viewPager);
-            adapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), getLifecycle());
-            viewPager.setAdapter(adapter);
+            defadapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), getLifecycle());
+            viewPager.setAdapter(defadapter);
 
             viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
                 @Override
@@ -90,13 +77,13 @@ public class ListActivity extends AppCompatActivity {
                 }
             });
 
-
             ArrayList<MyData> arrayList = new ArrayList<>();
             int itemCount = 0;
 
             for (Row row : sheet) {
                 String name = getCellValueAsString(row.getCell(0));
                 String dataN = getCellValueAsString(row.getCell(13));
+                groupSet.add(getCellValueAsString(row.getCell(18)));
 
                 if (name.equals("") && itemCount > 1) {
                         addFragmentAndUpdateAdapter(arrayList, false);
@@ -126,7 +113,6 @@ public class ListActivity extends AppCompatActivity {
                         itemCount++;
                     }
 
-
                     if (itemCount == MAX_ELEMENTS_PER_FRAGMENT) {
                         addFragmentAndUpdateAdapter(arrayList, false);
                         arrayList.clear();
@@ -146,20 +132,15 @@ public class ListActivity extends AppCompatActivity {
                 addFragmentAndUpdateAdapter(arrayList, false);
             }
 
+            Log.wtf("data", groupSet.toString());
             workbook.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        } catch (OutOfMemoryError error) {
-            Toast.makeText(ListActivity.this, getString(R.string.toastOutOfMemory), Toast.LENGTH_LONG).show();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
-    private void addFragmentAndUpdateAdapter(ArrayList<MyData> arrayList, boolean a) throws Exception {
-        adapter.addFragment(new ListFragment(new ArrayList<>(arrayList), a)); // Create a new ArrayList to avoid modifying the existing one
+    private void addFragmentAndUpdateAdapter(ArrayList<MyData> arrayList, boolean a) {
+        defadapter.addFragment(new ListFragment(new ArrayList<>(arrayList), a));
         Log.d("log", "added the fragment");
     }
 
@@ -173,9 +154,9 @@ public class ListActivity extends AppCompatActivity {
                 return cell.getStringCellValue();
             case NUMERIC:
                 double numericValue = cell.getNumericCellValue();
-                // Check if the numeric value is a whole number (no decimal part)
+
                 if (numericValue == (long) numericValue) {
-                    return String.valueOf((long) numericValue); // Convert to long to remove decimal if present
+                    return String.valueOf((long) numericValue);
                 } else {
                     return String.valueOf(numericValue);
                 }
@@ -184,11 +165,122 @@ public class ListActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        // Handle configuration changes here
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.toFirst:
+                viewPager.setCurrentItem(0);
+                return true;
+            case R.id.toLast:
+                viewPager.setCurrentItem(defadapter.getItemCount() - 1);
+                return true;
+            case R.id.toGroups:
+                Intent intent = new Intent(ListActivity.this, PassActivity.class);
+                intent.putExtra("group", "group");
+                startActivityForResult(intent, 1);
+                return true;
+
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private BroadcastReceiver customBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(ACTION_CUSTOM_BROADCAST)) {
+                defadapter.removeAll();
+                defadapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), getLifecycle());
+                viewPager.setAdapter(defadapter);
+
+                try {
+                    ArrayList<MyData> arrayList = new ArrayList<>();
+                    int itemCount = 0;
+
+                    for (Row row : sheet) {
+                        String name = getCellValueAsString(row.getCell(0));
+
+                        if (name.equals("") && itemCount > 1) {
+                            addFragmentAndUpdateAdapter(arrayList, false);
+                            arrayList.clear();
+                            itemCount = 0;
+                        }
+
+                        if (!name.contains("Назва") && !name.contains("Прайс") && !name.equals("") && getCellValueAsString(row.getCell(18)).equals(intent.getStringExtra("group"))) {
+                            String id = getCellValueAsString(row.getCell(3));
+                            String count = getCellValueAsString(row.getCell(4));
+                            String inPack = getCellValueAsString(row.getCell(6));
+                            String description = getCellValueAsString(row.getCell(12));
+                            String check = getCellValueAsString(row.getCell(10));
+                            String check__ = getCellValueAsString(row.getCell(11));
+
+                            if (check__.equals("+")) {
+                                MyData myData = new MyData(name, id, count, inPack, description, false, true);
+                                arrayList.add((MyData) myData.clone());
+                                itemCount++;
+                            } else if (check.equals("+")){
+                                MyData myData = new MyData(name, id, count, inPack, description, true, false);
+                                arrayList.add((MyData) myData.clone());
+                                itemCount++;
+                            } else {
+                                MyData myData = new MyData(name, id, count, inPack, description);
+                                arrayList.add((MyData) myData.clone());
+                                itemCount++;
+                            }
+
+                            if (itemCount == MAX_ELEMENTS_PER_FRAGMENT) {
+                                addFragmentAndUpdateAdapter(arrayList, false);
+                                arrayList.clear();
+                                itemCount = 0;
+                            }
+                        }
+                    }
+
+                    if (!arrayList.isEmpty()) {
+                        addFragmentAndUpdateAdapter(arrayList, false);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter intentFilter = new IntentFilter(ACTION_CUSTOM_BROADCAST);
+        registerReceiver(customBroadcastReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(customBroadcastReceiver);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                String result = data.getStringExtra("result_key");
+                if (result.equals("send")) {
+                    new GroupDialog(groupSet).show(getSupportFragmentManager(), "");
+                }
+            }
+        }
+    }
 }
