@@ -48,6 +48,7 @@ public class GroupDialog extends DialogFragment {
                     Intent broadcastIntent = new Intent(ACTION_CUSTOM_BROADCAST);
                     broadcastIntent.putExtra("group", s);
                     requireContext().sendBroadcast(broadcastIntent);
+                    dismiss();
                 }
             });
 
