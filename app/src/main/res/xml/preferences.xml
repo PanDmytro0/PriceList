@@ -30,11 +30,11 @@
         android:key="pass" />
 
     <EditTextPreference
-        android:title="@string/passPrefText"
+        android:title="@string/passPrefTextChange"
         android:key="passChange" />
 
     <EditTextPreference
-        android:title="@string/passPrefText"
+        android:title="@string/passPrefTextGroups"
         android:key="passGroups" />
 
     <EditTextPreference

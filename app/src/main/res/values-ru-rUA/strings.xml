@@ -19,10 +19,9 @@
     <string name="changeSizeText">Изменить размер</string>
     <string name="fontPreferencesText">Размер шрифта</string>
     <string name="imagePreferencesTextH">Высота картинки</string>
-    <string name="cardPreviewPrecerencesText">Размер маленькой карточки</string>
     <string name="cardFullPreferencesText">Размер полной карточки</string>
     <string name="delayOfViewPager">Задержка в просмотрщике страниц</string>
-    <string name="passPrefText">Пароль</string>
+    <string name="passPrefText">Пароль настройки</string>
     <string name="enterPassText">Введите пароль</string>
     <string name="toFirstText">На первую страницу</string>
     <string name="toLastText">На последнюю страницу</string>
@@ -30,6 +29,8 @@
     <string name="toastWrongPassword">Неправильный пароль!</string>
     <string name="groupModeButtonText">Режим групп</string>
     <string name="seeAllButtonText">Просмотреть все</string>
-    <string name="cardPreviewPrecerencesTextW">Ширина малої картки</string>
-    <string name="cardPreviewPrecerencesTextH">Висота малої картки</string>
+    <string name="cardPreviewPrecerencesTextW">Ширина маленькой карточки</string>
+    <string name="cardPreviewPrecerencesTextH">Высота маленькой карточки</string>
+    <string name="passPrefTextChange">Пароль изменения товаров</string>
+    <string name="passPrefTextGroups">Пароль изменения групп</string>
 </resources>

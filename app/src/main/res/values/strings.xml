@@ -22,7 +22,7 @@
     <string name="imagePreferencesTextH">Висота картинки</string>
     <string name="cardFullPreferencesText">Розміри повної картки</string>
     <string name="delayOfViewPager">Затримка перелистування</string>
-    <string name="passPrefText">Пароль</string>
+    <string name="passPrefText">Пароль налаштувань</string>
     <string name="enterPassText">Введіть пароль</string>
     <string name="toFirstText">На першу сторінку</string>
     <string name="toLastText">На останню сторінку</string>
@@ -32,5 +32,7 @@
     <string name="seeAllButtonText">Переглянути всі</string>
     <string name="cardPreviewPrecerencesTextW">Ширина малої картки</string>
     <string name="cardPreviewPrecerencesTextH">Висота малої картки</string>
+    <string name="passPrefTextChange">Пароль зміни товарів</string>
+    <string name="passPrefTextGroups">Пароль зміни груп</string>
 
 </resources>
