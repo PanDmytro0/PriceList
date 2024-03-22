@@ -57,8 +57,6 @@ public class DetailedActivity extends AppCompatActivity {
 
                         DbxUserUsersRequests r1 = client.users();
                         FullAccount account = r1.getCurrentAccount();
-
-                        Log.wtf("WTF", account.getName().getDisplayName());
                     } else {
                         Toast.makeText(DetailedActivity.this, getString(R.string.tokenRequiredText), Toast.LENGTH_LONG).show();
                     }

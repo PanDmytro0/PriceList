@@ -10,21 +10,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MyFragmentPagerAdapter extends FragmentStateAdapter {
-    private List<Fragment> fragmentList = new ArrayList<>();
+    private List<ListFragment> fragmentList = new ArrayList<>();
 
     public MyFragmentPagerAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
         super(fragmentManager, lifecycle);
     }
 
-    public void addFragment(Fragment fragment) {
+    public void addFragment(ListFragment fragment) {
         fragmentList.add(fragment);
         notifyDataSetChanged();
     }
 
     @NonNull
     @Override
-    public Fragment createFragment(int position) {
+    public ListFragment createFragment(int position) {
         return fragmentList.get(position);
+    }
+
+    public List<ListFragment> getAll() {
+        return fragmentList;
     }
 
     @Override

@@ -30,6 +30,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public class ListActivity extends AppCompatActivity {
 
@@ -184,7 +185,11 @@ public class ListActivity extends AppCompatActivity {
                 intent.putExtra("group", "group");
                 startActivityForResult(intent, 1);
                 return true;
-
+            case R.id.changeGroup:
+                Intent intenttt = new Intent(ListActivity.this, PassActivity.class);
+                intenttt.putExtra("group", "change");
+                startActivityForResult(intenttt, 1);
+                return true;
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -278,6 +283,10 @@ public class ListActivity extends AppCompatActivity {
             if (data != null) {
                 String result = data.getStringExtra("result_key");
                 if (result.equals("send")) {
+                    new GroupDialog(groupSet).show(getSupportFragmentManager(), "");
+                }
+
+                if (result.equals("change")) {
                     new GroupDialog(groupSet).show(getSupportFragmentManager(), "");
                 }
             }

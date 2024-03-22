@@ -24,33 +24,45 @@ public class PassActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(PassActivity.this);
         TextInputLayout textInputLayout = findViewById(R.id.passEditText);
         String pass = sharedPreferences.getString("pass", "");
+        String passChange = sharedPreferences.getString("passChange", "");
 
         if (pass.equals("")) {
             startActivity(new Intent(PassActivity.this, ChangeSizeActivity.class));
             finish();
 
         }
-        findViewById(R.id.reviewPassButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (textInputLayout.getEditText().getText().toString().trim().equals(pass.trim())) {
-                    if (getIntent().getStringExtra("group") != null) {
-                        sendDataBackToActivityB();
-                    } else {
-                        startActivity(new Intent(PassActivity.this, ChangeSizeActivity.class));
-                        finish();
-                    }
 
-                } else {
-                    Toast.makeText(PassActivity.this, getString(R.string.toastWrongPassword), Toast.LENGTH_LONG).show();
+        if (getIntent().getStringExtra("group").equals("change")) {
+            findViewById(R.id.reviewPassButton).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (textInputLayout.getEditText().getText().toString().trim().equals(passChange.trim())) {
+                        sendDataBackToActivityB("change");
+                    } else {
+                        Toast.makeText(PassActivity.this, getString(R.string.toastWrongPassword), Toast.LENGTH_LONG).show();
+                    }
                 }
-            }
-        });
+            });
+        }
+
+        if (getIntent().getStringExtra("group").equals("send")) {
+            findViewById(R.id.reviewPassButton).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (textInputLayout.getEditText().getText().toString().trim().equals(pass.trim())) {
+                        sendDataBackToActivityB("send");
+                    } else {
+                        Toast.makeText(PassActivity.this, getString(R.string.toastWrongPassword), Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        }
+
     }
 
-    public void sendDataBackToActivityB() {
+    public void sendDataBackToActivityB(String key) {
         Intent intent = new Intent();
-        intent.putExtra("result_key", "send");
+        intent.putExtra("result_key", key);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }

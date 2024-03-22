@@ -20,5 +20,9 @@
         android:title="@string/groupModeButtonText"
         android:id="@+id/toGroups"
         app:showAsAction="ifRoom" />
+    <item
+        android:title="abcd"
+        android:id="@+id/changeGroup"
+        app:showAsAction="ifRoom" />
 
 </menu>

@@ -255,4 +255,8 @@ public class ListFragment extends Fragment {
         float density = getResources().getDisplayMetrics().density;
         return Math.round(dp * density);
     }
+
+    public ArrayList<MyData> getMyDataArrayList() {
+        return myDataArrayList;
+    }
 }
