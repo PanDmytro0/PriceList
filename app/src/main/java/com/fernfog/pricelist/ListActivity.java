@@ -84,7 +84,13 @@ public class ListActivity extends AppCompatActivity {
             for (Row row : sheet) {
                 String name = getCellValueAsString(row.getCell(0));
                 String dataN = getCellValueAsString(row.getCell(13));
-                groupSet.add(getCellValueAsString(row.getCell(18)));
+
+                String[] groups = getCellValueAsString(row.getCell(18)).split(",");
+
+                for (String m: groups) {
+                    groupSet.add(m);
+                }
+
 
                 if (name.equals("") && itemCount > 1) {
                         addFragmentAndUpdateAdapter(arrayList, false);
@@ -182,7 +188,7 @@ public class ListActivity extends AppCompatActivity {
                 return true;
             case R.id.toGroups:
                 Intent intent = new Intent(ListActivity.this, PassActivity.class);
-                intent.putExtra("group", "group");
+                intent.putExtra("group", "send");
                 startActivityForResult(intent, 1);
                 return true;
             case R.id.changeGroup:
@@ -206,59 +212,67 @@ public class ListActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(ACTION_CUSTOM_BROADCAST)) {
-                defadapter.removeAll();
-                defadapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), getLifecycle());
-                viewPager.setAdapter(defadapter);
+                if (intent.getStringExtra("group") != null) {
+                    defadapter.removeAll();
+                    defadapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), getLifecycle());
+                    viewPager.setAdapter(defadapter);
 
-                try {
-                    ArrayList<MyData> arrayList = new ArrayList<>();
-                    int itemCount = 0;
+                    try {
+                        ArrayList<MyData> arrayList = new ArrayList<>();
+                        int itemCount = 0;
 
-                    for (Row row : sheet) {
-                        String name = getCellValueAsString(row.getCell(0));
+                        for (Row row : sheet) {
+                            String name = getCellValueAsString(row.getCell(0));
 
-                        if (name.equals("") && itemCount > 1) {
-                            addFragmentAndUpdateAdapter(arrayList, false);
-                            arrayList.clear();
-                            itemCount = 0;
-                        }
-
-                        if (!name.contains("Назва") && !name.contains("Прайс") && !name.equals("") && getCellValueAsString(row.getCell(18)).equals(intent.getStringExtra("group"))) {
-                            String id = getCellValueAsString(row.getCell(3));
-                            String count = getCellValueAsString(row.getCell(4));
-                            String inPack = getCellValueAsString(row.getCell(6));
-                            String description = getCellValueAsString(row.getCell(12));
-                            String check = getCellValueAsString(row.getCell(10));
-                            String check__ = getCellValueAsString(row.getCell(11));
-
-                            if (check__.equals("+")) {
-                                MyData myData = new MyData(name, id, count, inPack, description, false, true);
-                                arrayList.add((MyData) myData.clone());
-                                itemCount++;
-                            } else if (check.equals("+")){
-                                MyData myData = new MyData(name, id, count, inPack, description, true, false);
-                                arrayList.add((MyData) myData.clone());
-                                itemCount++;
-                            } else {
-                                MyData myData = new MyData(name, id, count, inPack, description);
-                                arrayList.add((MyData) myData.clone());
-                                itemCount++;
-                            }
-
-                            if (itemCount == MAX_ELEMENTS_PER_FRAGMENT) {
+                            if (name.equals("") && itemCount > 1) {
                                 addFragmentAndUpdateAdapter(arrayList, false);
                                 arrayList.clear();
                                 itemCount = 0;
                             }
-                        }
-                    }
 
-                    if (!arrayList.isEmpty()) {
-                        addFragmentAndUpdateAdapter(arrayList, false);
+                            if (!name.contains("Назва") && !name.contains("Прайс") && !name.equals("") && getCellValueAsString(row.getCell(18)).contains(intent.getStringExtra("group"))) {
+                                String id = getCellValueAsString(row.getCell(3));
+                                String count = getCellValueAsString(row.getCell(4));
+                                String inPack = getCellValueAsString(row.getCell(6));
+                                String description = getCellValueAsString(row.getCell(12));
+                                String check = getCellValueAsString(row.getCell(10));
+                                String check__ = getCellValueAsString(row.getCell(11));
+
+                                if (check__.equals("+")) {
+                                    MyData myData = new MyData(name, id, count, inPack, description, false, true);
+                                    arrayList.add((MyData) myData.clone());
+                                    itemCount++;
+                                } else if (check.equals("+")){
+                                    MyData myData = new MyData(name, id, count, inPack, description, true, false);
+                                    arrayList.add((MyData) myData.clone());
+                                    itemCount++;
+                                } else {
+                                    MyData myData = new MyData(name, id, count, inPack, description);
+                                    arrayList.add((MyData) myData.clone());
+                                    itemCount++;
+                                }
+
+                                if (itemCount == MAX_ELEMENTS_PER_FRAGMENT) {
+                                    addFragmentAndUpdateAdapter(arrayList, false);
+                                    arrayList.clear();
+                                    itemCount = 0;
+                                }
+                            }
+                        }
+
+                        if (!arrayList.isEmpty()) {
+                            addFragmentAndUpdateAdapter(arrayList, false);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
+
+                if (intent.getIntExtra("change", 0) != 0) {
+                    viewPager.setCurrentItem(intent.getIntExtra("change", 0), true);
+                }
+
+
             }
         }
     };
@@ -287,7 +301,7 @@ public class ListActivity extends AppCompatActivity {
                 }
 
                 if (result.equals("change")) {
-                    new GroupDialog(groupSet).show(getSupportFragmentManager(), "");
+                    new ChangeDialog(defadapter).show(getSupportFragmentManager(), "");
                 }
             }
         }

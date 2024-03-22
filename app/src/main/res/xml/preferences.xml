@@ -30,6 +30,14 @@
         android:key="pass" />
 
     <EditTextPreference
+        android:title="@string/passPrefText"
+        android:key="passChange" />
+
+    <EditTextPreference
+        android:title="@string/passPrefText"
+        android:key="passGroups" />
+
+    <EditTextPreference
         android:title="@string/delayOfViewPager"
         android:key="delayOfViewPager" />
 
