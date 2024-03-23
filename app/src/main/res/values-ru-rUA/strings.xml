@@ -33,4 +33,5 @@
     <string name="cardPreviewPrecerencesTextH">Высота маленькой карточки</string>
     <string name="passPrefTextChange">Пароль изменения товаров</string>
     <string name="passPrefTextGroups">Пароль изменения групп</string>
+    <string name="marginsOfCardsPrefsText">Отступы между карточками</string>
 </resources>

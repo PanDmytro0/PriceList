@@ -41,4 +41,8 @@
         android:title="@string/delayOfViewPager"
         android:key="delayOfViewPager" />
 
+    <EditTextPreference
+        android:title="@string/marginsOfCardsPrefsText"
+        android:key="marginsOfCards" />
+
 </PreferenceScreen>

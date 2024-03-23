@@ -116,7 +116,12 @@ public class ListFragment extends Fragment {
         GridLayout.LayoutParams mCardParams = new GridLayout.LayoutParams();
         mCardParams.width = dpToPx(Integer.parseInt(sharedPreferences.getString("cardPreviewSizeW",  "310")));
         mCardParams.height = dpToPx(Integer.parseInt(sharedPreferences.getString("cardPreviewSizeH",  "310")));
-        mCardParams.setMargins(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16));
+
+        mCardParams.setMargins(dpToPx(Integer.parseInt(sharedPreferences.getString("marginsOfCards",  "16"))),
+                dpToPx(Integer.parseInt(sharedPreferences.getString("marginsOfCards",  "16"))),
+                dpToPx(Integer.parseInt(sharedPreferences.getString("marginsOfCards",  "16"))),
+                dpToPx(Integer.parseInt(sharedPreferences.getString("marginsOfCards",  "16"))));
+
         mCardParams.setGravity(Gravity.CENTER); // Center both horizontally and vertically within GridLayout
         mCard.setLayoutParams(mCardParams);
         mCard.setRadius(dpToPx(22));

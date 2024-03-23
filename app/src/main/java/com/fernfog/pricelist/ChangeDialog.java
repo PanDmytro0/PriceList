@@ -18,16 +18,16 @@ import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.button.MaterialButton;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 public class ChangeDialog extends DialogFragment {
 
-    List<ListFragment> m;
-    private MyFragmentPagerAdapter defadapter;
+    public ArrayList<MyData2> pageSet;
 
-    ChangeDialog(MyFragmentPagerAdapter defadapter) {
-        this.defadapter = defadapter;
+    ChangeDialog(ArrayList<MyData2> pageSet) {
+        this.pageSet = pageSet;
     }
 
     @Nullable
@@ -44,40 +44,30 @@ public class ChangeDialog extends DialogFragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            m = defadapter.getAll();
-            for (final ListFragment mm : m) {
-                for (final MyData mmm : mm.getMyDataArrayList()) {
-                    if (mmm.name != null) {
-                        try {
-                            final MaterialButton materialButton = new MaterialButton(requireContext());
-                            materialButton.setText(mmm.name);
+            for (final MyData2 mm : pageSet) {
+                final MaterialButton materialButton = new MaterialButton(requireContext());
+                materialButton.setText(mm.name);
 
-                            materialButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    int index = defadapter.getAll().indexOf(mm);
+                materialButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Integer index = mm.page;
 
-                                    Intent broadcastIntent = new Intent(ACTION_CUSTOM_BROADCAST);
-                                    broadcastIntent.putExtra("change", index);
-                                    requireContext().sendBroadcast(broadcastIntent);
-                                    dismiss();
-                                }
-                            });
-
-                            // UI operations should be performed on the UI thread
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    LinearLayout linearLayout = requireView().findViewById(R.id.buttonsLayout);
-                                    linearLayout.addView(materialButton);
-                                }
-                            });
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        Intent broadcastIntent = new Intent(ACTION_CUSTOM_BROADCAST);
+                        broadcastIntent.putExtra("change", index);
+                        requireContext().sendBroadcast(broadcastIntent);
+                        dismiss();
                     }
-                }
+                });
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        LinearLayout linearLayout = requireView().findViewById(R.id.buttonsLayout);
+                        linearLayout.addView(materialButton);
+                    }
+                });
+
             }
             return null;
         }

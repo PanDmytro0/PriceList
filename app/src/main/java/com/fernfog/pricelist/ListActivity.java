@@ -40,6 +40,7 @@ public class ListActivity extends AppCompatActivity {
     public static final String ACTION_CUSTOM_BROADCAST = "com.example.ACTION_CUSTOM_BROADCAST";
 
     public HashSet<String> groupSet = new HashSet<>();
+    public ArrayList<MyData2> pageSet = new ArrayList<>();
     SharedPreferences sharedPreferences;
     Workbook workbook;
     Sheet sheet;
@@ -91,7 +92,6 @@ public class ListActivity extends AppCompatActivity {
                     groupSet.add(m);
                 }
 
-
                 if (name.equals("") && itemCount > 1) {
                         addFragmentAndUpdateAdapter(arrayList, false);
                         arrayList.clear();
@@ -105,6 +105,8 @@ public class ListActivity extends AppCompatActivity {
                     String description = getCellValueAsString(row.getCell(12));
                     String check = getCellValueAsString(row.getCell(10));
                     String check__ = getCellValueAsString(row.getCell(11));
+
+                    String page = getCellValueAsString(row.getCell(19));
 
                     if (check__.equals("+")) {
                         MyData myData = new MyData(name, id, count, inPack, description, false, true);
@@ -124,6 +126,14 @@ public class ListActivity extends AppCompatActivity {
                         addFragmentAndUpdateAdapter(arrayList, false);
                         arrayList.clear();
                         itemCount = 0;
+                    }
+
+                    if (!page.isEmpty()) {
+                        try {
+                            pageSet.add(new MyData2(name, Integer.parseInt(page)));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
 
@@ -301,7 +311,7 @@ public class ListActivity extends AppCompatActivity {
                 }
 
                 if (result.equals("change")) {
-                    new ChangeDialog(defadapter).show(getSupportFragmentManager(), "");
+                    new ChangeDialog(pageSet).show(getSupportFragmentManager(), "");
                 }
             }
         }
