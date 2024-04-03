@@ -17,32 +17,10 @@
         android:textColor="@color/white"
         android:textSize="50dp"
 
-        app:layout_constraintBottom_toTopOf="@id/tokenEditText"
+        app:layout_constraintBottom_toTopOf="@id/updateTokenButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tokenEditText"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/token"
-
-        app:hintTextColor="@color/white"
-        android:textColorHint="@color/white"
-
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/helloText"
-        app:layout_constraintBottom_toTopOf="@id/updateTokenButton">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/tokenEEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            android:textColor="@color/white" />
-    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/updateTokenButton"
@@ -54,20 +32,7 @@
 
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tokenEditText"
-        app:layout_constraintBottom_toTopOf="@id/openLinkButton" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/openLinkButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        style="@style/MyButton"
-        android:text="@string/openLinkButton"
-
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/updateTokenButton"
+        app:layout_constraintTop_toBottomOf="@id/helloText"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

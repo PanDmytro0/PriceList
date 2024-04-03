@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,16 +19,16 @@ import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.button.MaterialButton;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 public class ChangeDialog extends DialogFragment {
 
-    public ArrayList<MyData2> pageSet;
+    List<ListFragment> m;
+    private MyFragmentPagerAdapter defadapter;
 
-    ChangeDialog(ArrayList<MyData2> pageSet) {
-        this.pageSet = pageSet;
+    ChangeDialog(MyFragmentPagerAdapter defadapter) {
+        this.defadapter = defadapter;
     }
 
     @Nullable
@@ -44,30 +45,40 @@ public class ChangeDialog extends DialogFragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            for (final MyData2 mm : pageSet) {
-                final MaterialButton materialButton = new MaterialButton(requireContext());
-                materialButton.setText(mm.name);
+            m = defadapter.getAll();
+            for (final ListFragment mm : m) {
+                for (final MyData mmm : mm.getMyDataArrayList()) {
+                    if (mmm.nameOfGroup != null && !mmm.nameOfGroup.isEmpty()) {
+                        Log.d("tag", mmm.nameOfGroup);
+                        try {
+                            final MaterialButton materialButton = new MaterialButton(requireContext());
+                            materialButton.setText(mmm.nameOfGroup);
 
-                materialButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Integer index = mm.page;
+                            materialButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    int index = defadapter.getAll().indexOf(mm);
 
-                        Intent broadcastIntent = new Intent(ACTION_CUSTOM_BROADCAST);
-                        broadcastIntent.putExtra("change", index);
-                        requireContext().sendBroadcast(broadcastIntent);
-                        dismiss();
+                                    Intent broadcastIntent = new Intent(ACTION_CUSTOM_BROADCAST);
+                                    broadcastIntent.putExtra("change", index);
+                                    requireContext().sendBroadcast(broadcastIntent);
+                                    dismiss();
+                                }
+                            });
+
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    LinearLayout linearLayout = requireView().findViewById(R.id.buttonsLayout);
+                                    linearLayout.addView(materialButton);
+                                }
+                            });
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                });
-
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        LinearLayout linearLayout = requireView().findViewById(R.id.buttonsLayout);
-                        linearLayout.addView(materialButton);
-                    }
-                });
-
+                }
             }
             return null;
         }
