@@ -35,7 +35,6 @@ import okhttp3.Response;
 
 public class UpdateTokenActivity extends AppCompatActivity {
 
-    private Handler mHandler;
     SharedPreferences.Editor editor;
 
     @Override
@@ -46,7 +45,7 @@ public class UpdateTokenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_token);
 
-        mHandler = new Handler(Looper.getMainLooper());
+        Handler mHandler = new Handler(Looper.getMainLooper());
 
         findViewById(R.id.updateTokenButton).setOnClickListener(new View.OnClickListener() {
             @Override

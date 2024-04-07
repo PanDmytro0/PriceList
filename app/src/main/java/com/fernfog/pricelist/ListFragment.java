@@ -58,7 +58,6 @@ public class ListFragment extends Fragment {
     DbxRequestConfig config;
     DbxClientV2 client;
 
-
     public ListFragment(ArrayList<MyData> myDataArrayList, boolean a) {
         this.a = a;
         this.myDataArrayList = myDataArrayList;
@@ -71,7 +70,17 @@ public class ListFragment extends Fragment {
                 "MyPref", Context.MODE_PRIVATE);
         config = new DbxRequestConfig("dropbox/Price1998");
         String stringggToken = sharedPref.getString("token", "none");
+
+        ArrayList<String> imagesAvailable = new ArrayList<>();
+
         new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected void onPostExecute(Void unused) {
+                super.onPostExecute(unused);
+                Log.d("tagggg", imagesAvailable.toString());
+            }
+
             @Override
             protected Void doInBackground(Void... voids) {
                 try {
@@ -98,6 +107,7 @@ public class ListFragment extends Fragment {
         if (!a) {
             view = inflater.inflate(R.layout.fragment_list, container, false);
             GridLayout gridLayout = view.findViewById(R.id.parentLayout);
+
             for (MyData myData : myDataArrayList) {
                 addCardToView(myData, gridLayout);
             }
@@ -152,6 +162,7 @@ public class ListFragment extends Fragment {
             intent.putExtra("action", false);
             startActivity(intent);
         });
+
         File photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), myData.photoLink + ".jpg");
 
         if (photo.exists()) {

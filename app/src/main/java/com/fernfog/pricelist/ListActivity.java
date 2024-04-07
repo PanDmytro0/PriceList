@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -79,74 +80,97 @@ public class ListActivity extends AppCompatActivity {
             });
 
             ArrayList<MyData> arrayList = new ArrayList<>();
-            int itemCount = 0;
+            final int[] itemCount = {0};
+            final String[] dataN = {""};
 
-            for (Row row : sheet) {
-                String name = getCellValueAsString(row.getCell(0));
-                String dataN = getCellValueAsString(row.getCell(13));
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    for (Row row : sheet) {
 
-                String[] groups = getCellValueAsString(row.getCell(18)).split(",");
+                        try {
+                            String name = getCellValueAsString(row.getCell(0));
+                            dataN[0] = getCellValueAsString(row.getCell(13));
 
-                for (String m: groups) {
-                    groupSet.add(m);
-                }
+                            String[] groups = getCellValueAsString(row.getCell(18)).split(",");
+
+                            for (String m: groups) {
+                                groupSet.add(m);
+                            }
 
 
-                if (name.equals("") && itemCount > 1) {
-                    addFragmentAndUpdateAdapter(arrayList, false);
-                    arrayList.clear();
-                    itemCount = 0;
-                }
+                            if (name.equals("") && itemCount[0] > 1) {
+                                addFragmentAndUpdateAdapter(arrayList, false);
+                                arrayList.clear();
+                                itemCount[0] = 0;
+                            }
 
-                if (!name.contains("Назва") && !name.contains("Прайс") && !name.equals("")) {
-                    String id = getCellValueAsString(row.getCell(3));
-                    String count = getCellValueAsString(row.getCell(4));
-                    String inPack = getCellValueAsString(row.getCell(6));
-                    String description = getCellValueAsString(row.getCell(12));
-                    String check = getCellValueAsString(row.getCell(10));
-                    String check__ = getCellValueAsString(row.getCell(11));
-                    String nameOfGroup = getCellValueAsString(row.getCell(19));
+                            if (!name.contains("Назва") && !name.contains("Прайс") && !name.equals("")) {
+                                String id = getCellValueAsString(row.getCell(3));
+                                String count = getCellValueAsString(row.getCell(4));
+                                String inPack = getCellValueAsString(row.getCell(6));
+                                String description = getCellValueAsString(row.getCell(12));
+                                String check = getCellValueAsString(row.getCell(10));
+                                String check__ = getCellValueAsString(row.getCell(11));
+                                String nameOfGroup = getCellValueAsString(row.getCell(19));
 
-                    if (nameOfGroup != null) {
-                        MyData myData = new MyData(name, id, count, inPack, description, nameOfGroup);
-                        arrayList.add((MyData) myData.clone());
-                        itemCount++;
-                    } else if (check__.equals("+")) {
-                        MyData myData = new MyData(name, id, count, inPack, description, false, true);
-                        arrayList.add((MyData) myData.clone());
-                        itemCount++;
-                    } else if (check.equals("+")){
-                        MyData myData = new MyData(name, id, count, inPack, description, true, false);
-                        arrayList.add((MyData) myData.clone());
-                        itemCount++;
-                    } else if (check.equals("+")){
-                        MyData myData = new MyData(name, id, count, inPack, description, true, false);
-                        arrayList.add((MyData) myData.clone());
-                        itemCount++;
-                    } else {
-                        MyData myData = new MyData(name, id, count, inPack, description);
-                        arrayList.add((MyData) myData.clone());
-                        itemCount++;
+                                if (nameOfGroup != null) {
+                                    MyData myData = new MyData(name, id, count, inPack, description, nameOfGroup);
+                                    arrayList.add((MyData) myData.clone());
+                                    itemCount[0]++;
+                                } else if (check__.equals("+")) {
+                                    MyData myData = new MyData(name, id, count, inPack, description, false, true);
+                                    arrayList.add((MyData) myData.clone());
+                                    itemCount[0]++;
+                                } else if (check.equals("+")){
+                                    MyData myData = new MyData(name, id, count, inPack, description, true, false);
+                                    arrayList.add((MyData) myData.clone());
+                                    itemCount[0]++;
+                                } else if (check.equals("+")){
+                                    MyData myData = new MyData(name, id, count, inPack, description, true, false);
+                                    arrayList.add((MyData) myData.clone());
+                                    itemCount[0]++;
+                                } else {
+                                    MyData myData = new MyData(name, id, count, inPack, description);
+                                    arrayList.add((MyData) myData.clone());
+                                    itemCount[0]++;
+                                }
+
+                                if (itemCount[0] == MAX_ELEMENTS_PER_FRAGMENT) {
+                                    addFragmentAndUpdateAdapter(arrayList, false);
+                                    arrayList.clear();
+                                    itemCount[0] = 0;
+                                }
+                            }
+
+                            if (!dataN[0].equals("")) {
+                                ArrayList<MyData> arrayList_ = new ArrayList<>();
+                                arrayList_.add(new MyData(dataN[0]));
+                                addFragmentAndUpdateAdapter(arrayList_, true);
+                            }
+
+
+                        } catch (Exception e) {
+                        }
+
                     }
 
-                    if (itemCount == MAX_ELEMENTS_PER_FRAGMENT) {
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void unused) {
+                    super.onPostExecute(unused);
+
+
+
+                    if (!arrayList.isEmpty()) {
                         addFragmentAndUpdateAdapter(arrayList, false);
-                        arrayList.clear();
-                        itemCount = 0;
                     }
-                }
 
-                if (!dataN.equals("")) {
-                    arrayList.add(new MyData(dataN));
-                    addFragmentAndUpdateAdapter(arrayList, true);
-                    arrayList.clear();
-                    itemCount = 0;
                 }
-            }
+            }.execute();
 
-            if (!arrayList.isEmpty()) {
-                addFragmentAndUpdateAdapter(arrayList, false);
-            }
 
             Log.wtf("data", groupSet.toString());
             workbook.close();
