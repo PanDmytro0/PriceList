@@ -92,7 +92,7 @@ public class ListFragment extends Fragment {
 
                         Log.wtf("WTF", account.getName().getDisplayName());
                     } else {
-                        Toast.makeText(requireContext(), getString(R.string.tokenRequiredText), Toast.LENGTH_LONG).show();
+//                        Toast.makeText(requireContext(), getString(R.string.tokenRequiredText), Toast.LENGTH_LONG).show();
                     }
                 } catch (DbxException ex1) {
                     ex1.printStackTrace();

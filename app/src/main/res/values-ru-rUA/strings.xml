@@ -34,4 +34,7 @@
     <string name="passPrefTextChange">Пароль изменения товаров</string>
     <string name="passPrefTextGroups">Пароль изменения групп</string>
     <string name="marginsOfCardsPrefsText">Отступы между карточками</string>
+    <string name="accessGranted">Спасибо!</string>
+    <string name="downloadImagesButton">Завантажити всі картинки</string>
+    <string name="updateFilesText">Оновити файли</string>
 </resources>

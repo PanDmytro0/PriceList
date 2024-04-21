@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
 
         style="@style/MyButton"
-        android:text="@string/updatePriceText"
+        android:text="@string/updateFilesText"
 
         app:layout_constraintBottom_toTopOf="@id/updateTokenButton"
         app:layout_constraintEnd_toEndOf="parent"

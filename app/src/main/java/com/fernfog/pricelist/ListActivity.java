@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -29,6 +30,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -56,8 +59,12 @@ public class ListActivity extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.topBar);
         setSupportActionBar(myToolbar);
 
+        Uri file = (Uri) getIntent().getParcelableExtra("file");
+
+
         try {
-            workbook = WorkbookFactory.create(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "price.xlsm"));
+            workbook = WorkbookFactory.create(getContentResolver().openInputStream(file));
+
             sheet = workbook.getSheetAt(0);
 
             viewPager = findViewById(R.id.viewPager);
