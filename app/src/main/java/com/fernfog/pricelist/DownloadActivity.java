@@ -57,7 +57,8 @@ public class DownloadActivity extends AppCompatActivity {
                 storageRef.child("price.xlsm").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        new FileDownloader().downloadPrice(getApplicationContext(), new FileToDownload("price.xlsm", uri.toString()));
+                        FileDownloader fileDownloader = new FileDownloader();
+                        fileDownloader.downloadFile(getApplicationContext(), uri.toString(), "price.xlsm");
                     }
                 });
             }
