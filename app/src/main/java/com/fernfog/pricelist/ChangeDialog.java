@@ -48,7 +48,7 @@ public class ChangeDialog extends DialogFragment {
             m = defadapter.getAll();
             for (final ListFragment mm : m) {
                 for (final MyData mmm : mm.getMyDataArrayList()) {
-                    if (mmm.nameOfGroup != null && !mmm.nameOfGroup.isEmpty() && !mmm.nameOfGroup.toLowerCase().contains("name")) {
+                    if (mmm.nameOfGroup != null && !mmm.nameOfGroup.isEmpty()) {
                         Log.d("tag", mmm.nameOfGroup);
                         try {
                             final MaterialButton materialButton = new MaterialButton(requireContext());

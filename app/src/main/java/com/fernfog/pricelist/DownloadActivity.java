@@ -20,6 +20,8 @@ import java.util.ArrayList;
 public class DownloadActivity extends AppCompatActivity {
 
     FirebaseStorage storage = FirebaseStorage.getInstance("gs://somephingg.appspot.com");
+    int downloadCounter = 0;
+    int filesCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,19 +31,29 @@ public class DownloadActivity extends AppCompatActivity {
         MaterialButton materialButton = findViewById(R.id.updatePriceButton);
         MaterialButton downloadFiles = findViewById(R.id.downloadImagesButton);
 
+
         downloadFiles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                downloadFiles.setActivated(false);
                 storage.getReference().child("images").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
                     @Override
                     public void onSuccess(ListResult listResult) {
+                        filesCounter = listResult.getItems().size();
+
                         for (StorageReference item: listResult.getItems()) {
-                            item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    new FileDownloader().downloadImage(getApplicationContext(), new FileToDownload(item.getName(), uri.toString()));
-                                }
-                            });
+                            if (downloadCounter < filesCounter) {
+                                Log.d("counters", "filesTotal: " + filesCounter + " , " + "downloaded: " + downloadCounter);
+                                downloadCounter++;
+                                item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        new FileDownloader().downloadImage(getApplicationContext(), new FileToDownload(item.getName(), uri.toString()));
+                                    }
+                                });
+                            } else {
+
+                            }
                         }
                     }
                 });

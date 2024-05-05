@@ -94,24 +94,28 @@ public class DetailedActivity extends AppCompatActivity {
             textViewCount.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize",  "12"))));
             textViewDesc.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize",  "12"))));
 
+            defadapter.addFragment(new ImageFragment(getImageUri(this,  intent.getStringExtra("photoLink") + ".jpg")));
 
-            List<Uri> uris = searchImagesByName(this, intent.getStringExtra("photoLink"));
+            for (int i = 0; i <= 10; i++) {
+                Uri image = getImageUri(this,  intent.getStringExtra("photoLink") + "_" + i + ".jpg");
 
-            for (Uri uri: uris) {
-                defadapter.addFragment(new ImageFragment(uri));
+                if (image != null) {
+                    defadapter.addFragment((new ImageFragment(image)));
+                }
+
             }
         }
     }
 
-    public List<Uri> searchImagesByName(Context context, String searchString) {
-        List<Uri> imageUris = new ArrayList<>();
+    public Uri getImageUri(Context context, String imageName) {
+        Uri imageUri = null;
         ContentResolver contentResolver = context.getContentResolver();
 
-        // Construct the query to get images with names containing the search string
+        // Construct the query to get the image with the specified name
         Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         String[] projection = { MediaStore.Images.Media._ID };
-        String selection = MediaStore.Images.Media.DISPLAY_NAME + " LIKE ?";
-        String[] selectionArgs = new String[] { "%" + searchString + "%" };
+        String selection = MediaStore.Images.Media.DISPLAY_NAME + " = ?";
+        String[] selectionArgs = new String[] { imageName };
 
         // Query the MediaStore
         Cursor cursor = contentResolver.query(
@@ -124,21 +128,20 @@ public class DetailedActivity extends AppCompatActivity {
 
         if (cursor != null) {
             try {
-                // Iterate through the cursor to get image URIs
-                while (cursor.moveToNext()) {
+                // If the cursor has data, move to the first item
+                if (cursor.moveToFirst()) {
                     // Get the image URI from the cursor
                     @SuppressLint("Range") long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID));
-                    Uri contentUri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Long.toString(id));
-                    imageUris.add(contentUri);
+                    imageUri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Long.toString(id));
                 }
             } finally {
                 cursor.close();
             }
         } else {
-            Log.e("ImageSearcher", "Cursor is null");
+            Log.e("ImageLoader", "Cursor is null");
         }
 
-        return imageUris;
+        return imageUri;
     }
 
     private int dpToPx(int dp) {
