@@ -179,13 +179,11 @@ public class ListFragment extends Fragment {
         Uri imageUri = null;
         ContentResolver contentResolver = context.getContentResolver();
 
-        // Construct the query to get the image with the specified name
         Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         String[] projection = { MediaStore.Images.Media._ID };
         String selection = MediaStore.Images.Media.DISPLAY_NAME + " = ?";
         String[] selectionArgs = new String[] { imageName };
 
-        // Query the MediaStore
         Cursor cursor = contentResolver.query(
                 uri,
                 projection,
@@ -196,9 +194,7 @@ public class ListFragment extends Fragment {
 
         if (cursor != null) {
             try {
-                // If the cursor has data, move to the first item
                 if (cursor.moveToFirst()) {
-                    // Get the image URI from the cursor
                     @SuppressLint("Range") long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID));
                     imageUri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Long.toString(id));
                 }
