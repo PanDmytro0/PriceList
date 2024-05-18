@@ -25,11 +25,6 @@ public class PassActivity extends AppCompatActivity {
         String passChange = sharedPreferences.getString("passChange", "");
         String passGroups = sharedPreferences.getString("passGroups", "");
 
-        if (pass.equals("") && passChange.equals("")) {
-            startActivity(new Intent(PassActivity.this, ChangeSizeActivity.class));
-            finish();
-        }
-
         if (getIntent().getStringExtra("group").equals("change")) {
             findViewById(R.id.reviewPassButton).setOnClickListener(new View.OnClickListener() {
                 @Override

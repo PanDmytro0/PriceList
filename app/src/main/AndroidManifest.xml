@@ -30,9 +30,6 @@
             android:name=".ChangeSizeActivity"
             android:exported="false" />
         <activity
-            android:name=".UpdateTokenActivity"
-            android:exported="false" />
-        <activity
             android:name=".DetailedActivity"
             android:exported="false" />
         <activity

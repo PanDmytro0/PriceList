@@ -16,12 +16,16 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 
+
+import com.google.android.material.button.MaterialButton;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -46,6 +50,9 @@ public class ListActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     Workbook workbook;
     Sheet sheet;
+
+    public ArrayList<Integer> changes = new ArrayList<>();
+    public Integer index = 0;
 
 
     @Override
@@ -158,6 +165,16 @@ public class ListActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        for (final ListFragment mm : defadapter.getAll()) {
+            for (final MyData mmm : mm.getMyDataArrayList()) {
+                if (mmm.nameOfGroup != null && !mmm.nameOfGroup.isEmpty()) {
+                    changes.add(defadapter.getAll().indexOf(mm));
+                }
+            }
+        }
+
+        Log.d("changes", "" + changes);
     }
 
     private void addFragmentAndUpdateAdapter(ArrayList<MyData> arrayList, boolean a) {
@@ -196,19 +213,29 @@ public class ListActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.toFirst:
                 viewPager.setCurrentItem(0);
+                index = 0;
                 return true;
             case R.id.toLast:
-                viewPager.setCurrentItem(defadapter.getItemCount() - 1);
+                viewPager.setCurrentItem(changes.get(index), true);
+                index += 1;
                 return true;
             case R.id.toGroups:
-                Intent intent = new Intent(ListActivity.this, PassActivity.class);
-                intent.putExtra("group", "send");
-                startActivityForResult(intent, 1);
+                if (sharedPreferences.getString("passGroups", "").isEmpty()) {
+                    new GroupDialog(groupSet).show(getSupportFragmentManager(), "");
+                } else {
+                    Intent intent = new Intent(ListActivity.this, PassActivity.class);
+                    intent.putExtra("group", "send");
+                    startActivityForResult(intent, 1);
+                }
                 return true;
             case R.id.changeGroup:
-                Intent intenttt = new Intent(ListActivity.this, PassActivity.class);
-                intenttt.putExtra("group", "change");
-                startActivityForResult(intenttt, 1);
+                if (sharedPreferences.getString("passChange", "").isEmpty()) {
+                    new ChangeDialog(defadapter).show(getSupportFragmentManager(), "");
+                } else {
+                    Intent intenttt = new Intent(ListActivity.this, PassActivity.class);
+                    intenttt.putExtra("group", "change");
+                    startActivityForResult(intenttt, 1);
+                }
                 return true;
 
             default:

@@ -31,7 +31,6 @@ public class DownloadActivity extends AppCompatActivity {
         MaterialButton materialButton = findViewById(R.id.updatePriceButton);
         MaterialButton downloadFiles = findViewById(R.id.downloadImagesButton);
 
-
         downloadFiles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class FileDownloader {
 
     public void downloadImage(Context context, FileToDownload fileToDownload) {
-        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "priceList/" + fileToDownload.name);
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "priceList/" + fileToDownload.name);
 
         if (file.exists()) {
            return;
@@ -20,7 +20,7 @@ public class FileDownloader {
 
             request.setTitle(fileToDownload.name);
 
-            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, "priceList/" + fileToDownload.name);
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "priceList/" + fileToDownload.name);
 
             DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
             long downloadId = downloadManager.enqueue(request);
