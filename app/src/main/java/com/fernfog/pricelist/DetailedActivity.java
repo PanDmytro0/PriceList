@@ -30,6 +30,9 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -40,6 +43,10 @@ import java.util.List;
 
 public class DetailedActivity extends AppCompatActivity {
     private MyFragmentPagerAdapter2 defadapter;
+
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference storageRef = storage.getReference();
+
 
     @SuppressLint("StaticFieldLeak")
     @Override
@@ -103,6 +110,17 @@ public class DetailedActivity extends AppCompatActivity {
                     defadapter.addFragment((new ImageFragment(image)));
                 }
 
+            }
+
+            String video = intent.getStringExtra("video");
+
+            if (!video.isEmpty()) {
+                storageRef.child("video/" + video + ".mp4").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        defadapter.addFragment((new VideoFragment(Uri.parse(uri.toString()))));
+                    }
+                });
             }
         }
     }

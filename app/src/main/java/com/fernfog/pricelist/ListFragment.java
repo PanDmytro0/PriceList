@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.cardview.widget.CardView;
 import androidx.core.content.res.ResourcesCompat;
@@ -32,7 +34,13 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.sl.usermodel.Line;
@@ -44,9 +52,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class ListFragment extends Fragment {
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+
+    StorageReference storageRef = storage.getReference();
+
 
     private ArrayList<MyData> myDataArrayList;
     private boolean a;
@@ -69,9 +82,39 @@ public class ListFragment extends Fragment {
                 addCardToView(myData, gridLayout);
             }
         } else {
-            view = inflater.inflate(R.layout.fragment_list_a, container, false);
-            ImageView imageView = view.findViewById(R.id.a);
-            Glide.with(this).load(myDataArrayList.get(0).getPhotoLink()).into(imageView);
+            if (myDataArrayList.get(0).getPhotoLink().toLowerCase().contains("video")) {
+
+                Log.d("tagg", myDataArrayList.get(0).getPhotoLink().split("/")[1]);
+
+                view = inflater.inflate(R.layout.fragment_list_video, container, false);
+
+                PlayerView playerView = view.findViewById(R.id.player_view);
+
+                ExoPlayer player = new ExoPlayer.Builder(requireContext()).build();
+                playerView.setPlayer(player);
+
+                storageRef.child("promotions/video/" + myDataArrayList.get(0).getPhotoLink().split("/")[1] + ".mp4").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        MediaItem mediaItem = MediaItem.fromUri(Uri.parse(uri.toString()));
+                        player.setMediaItem(mediaItem);
+
+                        player.prepare();
+                        player.play();
+                    }
+                });
+
+            } else {
+                view = inflater.inflate(R.layout.fragment_list_a, container, false);
+                ImageView imageView = view.findViewById(R.id.a);
+
+                storageRef.child("promotions/image/" + myDataArrayList.get(0).getPhotoLink() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Glide.with(requireContext()).load(uri).into(imageView);
+                    }
+                });
+            }
         }
 
         return view;
@@ -117,6 +160,7 @@ public class ListFragment extends Fragment {
             intent.putExtra("inPack", myData.getInPack());
             intent.putExtra("desc", myData.getDescription());
             intent.putExtra("action", false);
+            intent.putExtra("video", myData.getVideo());
             startActivity(intent);
         });
 
@@ -131,19 +175,27 @@ public class ListFragment extends Fragment {
         mText.setText(myData.getName());
         Typeface customFont = ResourcesCompat.getFont(requireContext(), R.font.marmelad);
         mText.setTypeface(customFont);
-        mText.setGravity(Gravity.CENTER);
+
+        LinearLayout.LayoutParams mTextParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        mTextParams.gravity = Gravity.CENTER;
+        mTextParams.setMargins(0, dpToPx(Integer.parseInt(sharedPreferences.getString("marginsTextTop",  "0"))), 0, dpToPx(Integer.parseInt(sharedPreferences.getString("marginsTextBottom",  "0"))));
+        mText.setLayoutParams(mTextParams);
 
         TextView dateText = new TextView(requireContext());
         dateText.setTextColor(getResources().getColor(R.color.textColor));
         dateText.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize",  "12"))));
         dateText.setText(myData.getCount() + "/" + myData.getInPack());
         dateText.setTypeface(customFont);
-        dateText.setGravity(Gravity.RIGHT);
+
+        LinearLayout.LayoutParams dateTextParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dateTextParams.gravity = Gravity.RIGHT;
+        dateTextParams.setMargins(0, dpToPx(Integer.parseInt(sharedPreferences.getString("marginsCountTextTop",  "0"))), 0, dpToPx(Integer.parseInt(sharedPreferences.getString("marginsCountTextBottom",  "0"))));
+        dateText.setLayoutParams(dateTextParams);
+
 
         insideCardLayout.addView(mText);
 
         insideCardLayout.addView(imageButton);
-
 
         if (myData.isOPT){
             dateText.setTextColor(getResources().getColor(R.color.textColorOPT));

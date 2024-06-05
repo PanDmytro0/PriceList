@@ -19,13 +19,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -45,7 +51,6 @@ public class ListActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
     private MyFragmentPagerAdapter defadapter;
     public static final String ACTION_CUSTOM_BROADCAST = "com.example.ACTION_CUSTOM_BROADCAST";
-
     public HashSet<String> groupSet = new HashSet<>();
     SharedPreferences sharedPreferences;
     Workbook workbook;
@@ -53,6 +58,8 @@ public class ListActivity extends AppCompatActivity {
 
     public ArrayList<Integer> changes = new ArrayList<>();
     public Integer index = 0;
+
+    private DatabaseReference mDatabase;
 
 
     @Override
@@ -67,6 +74,145 @@ public class ListActivity extends AppCompatActivity {
 
         Uri file = (Uri) getIntent().getParcelableExtra("file");
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
+
+        mDatabase.child("розмір_шрифту").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                sharedPreferencesEditor.putString("fontSize", task.getResult().getValue().toString());
+                sharedPreferencesEditor.apply();
+
+            }
+        });
+
+        mDatabase.child("висота_картинки").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                sharedPreferencesEditor.putString("imageSizeH", task.getResult().getValue().toString());
+                sharedPreferencesEditor.apply();
+
+            }
+        });
+
+        mDatabase.child("ширина_картинки").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                sharedPreferencesEditor.putString("imageSizeW", task.getResult().getValue().toString());
+                sharedPreferencesEditor.apply();
+
+            }
+        });
+
+        mDatabase.child("ширина_малої_картки").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                sharedPreferencesEditor.putString("cardPreviewSizeW", task.getResult().getValue().toString());
+                sharedPreferencesEditor.apply();
+
+            }
+        });
+
+        mDatabase.child("висота_малої_картки").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                sharedPreferencesEditor.putString("cardPreviewSizeH", task.getResult().getValue().toString());
+                sharedPreferencesEditor.apply();
+
+            }
+        });
+
+        mDatabase.child("розміри_повної_картки").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                sharedPreferencesEditor.putString("cardFullSize", task.getResult().getValue().toString());
+                sharedPreferencesEditor.apply();
+
+            }
+        });
+
+        mDatabase.child("пароль_налаштувань").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                sharedPreferencesEditor.putString("pass", task.getResult().getValue().toString());
+                sharedPreferencesEditor.apply();
+
+            }
+        });
+
+        mDatabase.child("пароль_зміни_товарів").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                sharedPreferencesEditor.putString("passChange", task.getResult().getValue().toString());
+                sharedPreferencesEditor.apply();
+
+            }
+        });
+
+        mDatabase.child("пароль_зміни_груп").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                sharedPreferencesEditor.putString("passGroups", task.getResult().getValue().toString());
+                sharedPreferencesEditor.apply();
+
+            }
+        });
+
+        mDatabase.child("затримка_перелистування").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                sharedPreferencesEditor.putString("delayOfViewPager", task.getResult().getValue().toString());
+                sharedPreferencesEditor.apply();
+
+            }
+        });
+
+        mDatabase.child("відступи_між_картками").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                sharedPreferencesEditor.putString("marginsOfCards", task.getResult().getValue().toString());
+                sharedPreferencesEditor.apply();
+
+            }
+        });
+
+        mDatabase.child("відступ_назви_зверху").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                sharedPreferencesEditor.putString("marginsTextTop", task.getResult().getValue().toString());
+                sharedPreferencesEditor.apply();
+
+            }
+        });
+
+        mDatabase.child("відступ_назви_знизу").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                sharedPreferencesEditor.putString("marginsTextBottom", task.getResult().getValue().toString());
+                sharedPreferencesEditor.apply();
+
+            }
+        });
+
+        mDatabase.child("відступ_кількості_зверху").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                sharedPreferencesEditor.putString("marginsCountTextTop", task.getResult().getValue().toString());
+                sharedPreferencesEditor.apply();
+
+            }
+        });
+
+        mDatabase.child("відступ_кількості_знизу").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                sharedPreferencesEditor.putString("marginsCountTextBottom", task.getResult().getValue().toString());
+                sharedPreferencesEditor.apply();
+
+            }
+        });
+
         try {
             workbook = WorkbookFactory.create(getContentResolver().openInputStream(file));
             sheet = workbook.getSheetAt(0);
@@ -78,7 +224,7 @@ public class ListActivity extends AppCompatActivity {
             viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
                 @Override
                 public void onPageSelected(int position) {
-                    int delay = Integer.parseInt(sharedPreferences.getString("delayOfViewPager", "1")) * 1000;
+                    int delay = Integer.parseInt(sharedPreferences.getString("delayOfViewPager", "1")) * 100;
 
                     viewPager.setUserInputEnabled(false);
                     new Handler().postDelayed(new Runnable() {
@@ -121,17 +267,21 @@ public class ListActivity extends AppCompatActivity {
                         String check = getCellValueAsString(row.getCell(10));
                         String check__ = getCellValueAsString(row.getCell(11));
                         String nameOfGroup = getCellValueAsString(row.getCell(19));
+                        String video = getCellValueAsString(row.getCell(20));
 
                         if (check__.equals("+")) {
                             MyData myData = new MyData(name, id, count, inPack, description, false, true, nameOfGroup);
+                            myData.setVideo(video);
                             arrayList.add((MyData) myData.clone());
                             itemCount[0]++;
                         } else if (check.equals("+")){
                             MyData myData = new MyData(name, id, count, inPack, description, true, false, nameOfGroup);
+                            myData.setVideo(video);
                             arrayList.add((MyData) myData.clone());
                             itemCount[0]++;
                         } else {
                             MyData myData = new MyData(name, id, count, inPack, description, nameOfGroup);
+                            myData.setVideo(video);
                             arrayList.add((MyData) myData.clone());
                             itemCount[0]++;
                         }

@@ -1,9 +1,16 @@
 package com.fernfog.pricelist;
 
+import android.content.ContentResolver;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,6 +22,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class DownloadActivity extends AppCompatActivity {
@@ -23,6 +31,11 @@ public class DownloadActivity extends AppCompatActivity {
     int downloadCounter = 0;
     int filesCounter = 0;
 
+    File file;
+    private boolean isRunning = true;
+    ProgressBar progressBar1;
+    TextView percentageText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +43,18 @@ public class DownloadActivity extends AppCompatActivity {
 
         MaterialButton materialButton = findViewById(R.id.updatePriceButton);
         MaterialButton downloadFiles = findViewById(R.id.downloadImagesButton);
+        progressBar1 = findViewById(R.id.progressBar);
+        percentageText = findViewById(R.id.percentage);
+
+        file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "priceList/");
+
+        storage.getReference().child("images").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
+                filesCounter = listResult.getItems().size();
+            }
+        });
+
 
         downloadFiles.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,9 +95,54 @@ public class DownloadActivity extends AppCompatActivity {
                     public void onSuccess(Uri uri) {
                         FileDownloader fileDownloader = new FileDownloader();
                         fileDownloader.downloadFile(getApplicationContext(), uri.toString(), "price.xlsm");
+                        Toast.makeText(DownloadActivity.this, getString(R.string.priceUpdatedText), Toast.LENGTH_LONG).show();
                     }
                 });
             }
         });
+
+
+        if (file.exists() && file.isDirectory()) {
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (isRunning) {
+                        try {
+                            Thread.sleep(5000);
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    updateProgress();
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }).start();
+
+        }
+    }
+
+    void updateProgress() {
+        try {
+            double percentage = ((double) file.listFiles().length / (double) filesCounter) * 100;
+
+
+            progressBar1.setProgress((int) percentage);
+            percentageText.setText(Math.round(percentage) + "%");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        isRunning = false;
     }
 }

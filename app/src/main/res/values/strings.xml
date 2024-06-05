@@ -38,5 +38,10 @@
     <string name="accessGranted">Дякую!</string>
     <string name="downloadImagesButton">Завантажити всі картинки</string>
     <string name="updateFilesText">Оновити файли</string>
+    <string name="prefTextMarginTop">Відступ назви зверху</string>
+    <string name="prefTextMarginBottom">Відступ назви знизу</string>
+    <string name="prefCountTextMarginTop">Відступ кількості зверху</string>
+    <string name="prefCountTextMarginBottom">Відступ кількості знизу</string>
+    <string name="priceUpdatedText">Прайс оновлено!</string>
 
 </resources>

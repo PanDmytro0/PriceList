@@ -45,4 +45,20 @@
         android:title="@string/marginsOfCardsPrefsText"
         android:key="marginsOfCards" />
 
+    <EditTextPreference
+        android:title="@string/prefTextMarginTop"
+        android:key="marginsTextTop" />
+
+    <EditTextPreference
+        android:title="@string/prefTextMarginBottom"
+        android:key="marginsTextBottom" />
+
+    <EditTextPreference
+        android:title="@string/prefCountTextMarginTop"
+        android:key="marginsCountTextTop" />
+
+    <EditTextPreference
+        android:title="@string/prefCountTextMarginBottom"
+        android:key="marginsCountTextBottom" />
+
 </PreferenceScreen>

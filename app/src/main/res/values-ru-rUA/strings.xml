@@ -35,6 +35,11 @@
     <string name="passPrefTextGroups">Пароль изменения групп</string>
     <string name="marginsOfCardsPrefsText">Отступы между карточками</string>
     <string name="accessGranted">Спасибо!</string>
-    <string name="downloadImagesButton">Завантажити всі картинки</string>
-    <string name="updateFilesText">Оновити файли</string>
+    <string name="downloadImagesButton">Скачать все картинки</string>
+    <string name="updateFilesText">Обновить файлы</string>
+    <string name="prefTextMarginTop">Отступление названия сверху</string>
+    <string name="prefTextMarginBottom">Отступ названия снизу</string>
+    <string name="prefCountTextMarginTop">Отступ количества сверху</string>
+    <string name="prefCountTextMarginBottom">Отступ количества снизу</string>
+    <string name="priceUpdatedText">Прайс обновлен!</string>
 </resources>

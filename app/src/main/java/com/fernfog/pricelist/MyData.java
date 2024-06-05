@@ -10,6 +10,7 @@ public class MyData implements Cloneable {
     String nameOfGroup;
     boolean isOPT;
     boolean isOIOD;
+    String video;
 
     MyData(String name, String photoLink, String count, String inPack, String description) {
         this.name = name;
@@ -70,6 +71,14 @@ public class MyData implements Cloneable {
 
     public String getName() {
         return name;
+    }
+
+    public String getVideo() {
+        return video;
+    }
+
+    public void setVideo(String video) {
+        this.video = video;
     }
 
     @Override

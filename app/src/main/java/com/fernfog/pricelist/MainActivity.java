@@ -53,15 +53,15 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        findViewById(R.id.changeSizeButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, PassActivity.class);
-                intent.putExtra("group", "set");
-
-                startActivity(intent);
-            }
-        });
+//        findViewById(R.id.changeSizeButton).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(MainActivity.this, PassActivity.class);
+//                intent.putExtra("group", "set");
+//
+//                startActivity(intent);
+//            }
+//        });
 
         findViewById(R.id.updateButton).setOnClickListener(new View.OnClickListener() {
             @Override
