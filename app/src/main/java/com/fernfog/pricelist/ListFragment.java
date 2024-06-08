@@ -7,9 +7,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Typeface;
-import android.media.MediaPlayer;
+
 import android.net.Uri;
-import android.os.AsyncTask;
+
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -24,8 +24,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.VideoView;
 
 import androidx.cardview.widget.CardView;
 import androidx.core.content.res.ResourcesCompat;
@@ -37,32 +35,12 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.button.MaterialButton;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.poi.sl.usermodel.Line;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
 
 public class ListFragment extends Fragment {
-    FirebaseStorage storage = FirebaseStorage.getInstance();
+    private final ArrayList<MyData> myDataArrayList;
+    private final boolean a;
 
-    StorageReference storageRef = storage.getReference();
-
-
-    private ArrayList<MyData> myDataArrayList;
-    private boolean a;
     public ListFragment(ArrayList<MyData> myDataArrayList, boolean a) {
         this.a = a;
         this.myDataArrayList = myDataArrayList;
@@ -71,8 +49,6 @@ public class ListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view;
-        SharedPreferences sharedPref = requireContext().getSharedPreferences(
-                "MyPref", Context.MODE_PRIVATE);
 
         if (!a) {
             view = inflater.inflate(R.layout.fragment_list, container, false);
@@ -93,27 +69,17 @@ public class ListFragment extends Fragment {
                 ExoPlayer player = new ExoPlayer.Builder(requireContext()).build();
                 playerView.setPlayer(player);
 
-                storageRef.child("promotions/video/" + myDataArrayList.get(0).getPhotoLink().split("/")[1] + ".mp4").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        MediaItem mediaItem = MediaItem.fromUri(Uri.parse(uri.toString()));
-                        player.setMediaItem(mediaItem);
+                MediaItem mediaItem = MediaItem.fromUri(getMediaFileUri(requireContext(), Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/priceList/videos/" + myDataArrayList.get(0).getPhotoLink().split("/")[1] + ".mp4"));
+                player.setMediaItem(mediaItem);
 
-                        player.prepare();
-                        player.play();
-                    }
-                });
+                player.prepare();
+                player.play();
 
             } else {
                 view = inflater.inflate(R.layout.fragment_list_a, container, false);
                 ImageView imageView = view.findViewById(R.id.a);
 
-                storageRef.child("promotions/image/" + myDataArrayList.get(0).getPhotoLink() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Glide.with(requireContext()).load(uri).into(imageView);
-                    }
-                });
+                Glide.with(requireContext()).load(getMediaFileUri(requireContext(), Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/priceList/promotions/" + myDataArrayList.get(0).getPhotoLink() + ".jpg")).into(imageView);
             }
         }
 
@@ -124,13 +90,13 @@ public class ListFragment extends Fragment {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
         CardView mCard = new CardView(requireContext());
         GridLayout.LayoutParams mCardParams = new GridLayout.LayoutParams();
-        mCardParams.width = dpToPx(Integer.parseInt(sharedPreferences.getString("cardPreviewSizeW",  "310")));
-        mCardParams.height = dpToPx(Integer.parseInt(sharedPreferences.getString("cardPreviewSizeH",  "310")));
+        mCardParams.width = dpToPx(Integer.parseInt(sharedPreferences.getString("cardPreviewSizeW", "310")));
+        mCardParams.height = dpToPx(Integer.parseInt(sharedPreferences.getString("cardPreviewSizeH", "310")));
 
-        mCardParams.setMargins(dpToPx(Integer.parseInt(sharedPreferences.getString("marginsOfCards",  "16"))),
-                dpToPx(Integer.parseInt(sharedPreferences.getString("marginsOfCards",  "16"))),
-                dpToPx(Integer.parseInt(sharedPreferences.getString("marginsOfCards",  "16"))),
-                dpToPx(Integer.parseInt(sharedPreferences.getString("marginsOfCards",  "16"))));
+        mCardParams.setMargins(dpToPx(Integer.parseInt(sharedPreferences.getString("marginsOfCards", "16"))),
+                dpToPx(Integer.parseInt(sharedPreferences.getString("marginsOfCards", "16"))),
+                dpToPx(Integer.parseInt(sharedPreferences.getString("marginsOfCards", "16"))),
+                dpToPx(Integer.parseInt(sharedPreferences.getString("marginsOfCards", "16"))));
 
         mCardParams.setGravity(Gravity.CENTER); // Center both horizontally and vertically within GridLayout
         mCard.setLayoutParams(mCardParams);
@@ -146,7 +112,7 @@ public class ListFragment extends Fragment {
         insideCardLayout.setOrientation(LinearLayout.VERTICAL);
 
         ImageButton imageButton = new ImageButton(requireContext());
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dpToPx(Integer.parseInt(sharedPreferences.getString("imageSizeW",  "100"))), dpToPx(Integer.parseInt(sharedPreferences.getString("imageSizeH",  "100"))));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dpToPx(Integer.parseInt(sharedPreferences.getString("imageSizeW", "100"))), dpToPx(Integer.parseInt(sharedPreferences.getString("imageSizeH", "100"))));
         params.gravity = Gravity.CENTER;
         imageButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         imageButton.setLayoutParams(params);
@@ -164,43 +130,42 @@ public class ListFragment extends Fragment {
             startActivity(intent);
         });
 
-            Glide.with(requireContext())
-                    .load(getImageUri(requireContext(), myData.photoLink + ".jpg"))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
-                    .into(imageButton);
+        Glide.with(requireContext())
+                .load(getMediaFileUri(requireContext(), Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/priceList/" + myData.photoLink + ".jpg"))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
+                .into(imageButton);
 
         TextView mText = new TextView(requireContext());
-        mText.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize",  "12"))));
+        mText.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize", "12"))));
         mText.setText(myData.getName());
         Typeface customFont = ResourcesCompat.getFont(requireContext(), R.font.marmelad);
         mText.setTypeface(customFont);
 
         LinearLayout.LayoutParams mTextParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         mTextParams.gravity = Gravity.CENTER;
-        mTextParams.setMargins(0, dpToPx(Integer.parseInt(sharedPreferences.getString("marginsTextTop",  "0"))), 0, dpToPx(Integer.parseInt(sharedPreferences.getString("marginsTextBottom",  "0"))));
+        mTextParams.setMargins(0, dpToPx(Integer.parseInt(sharedPreferences.getString("marginsTextTop", "0"))), 0, dpToPx(Integer.parseInt(sharedPreferences.getString("marginsTextBottom", "0"))));
         mText.setLayoutParams(mTextParams);
 
         TextView dateText = new TextView(requireContext());
         dateText.setTextColor(getResources().getColor(R.color.textColor));
-        dateText.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize",  "12"))));
+        dateText.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize", "12"))));
         dateText.setText(myData.getCount() + "/" + myData.getInPack());
         dateText.setTypeface(customFont);
 
         LinearLayout.LayoutParams dateTextParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dateTextParams.gravity = Gravity.RIGHT;
-        dateTextParams.setMargins(0, dpToPx(Integer.parseInt(sharedPreferences.getString("marginsCountTextTop",  "0"))), 0, dpToPx(Integer.parseInt(sharedPreferences.getString("marginsCountTextBottom",  "0"))));
+        dateTextParams.setMargins(0, dpToPx(Integer.parseInt(sharedPreferences.getString("marginsCountTextTop", "0"))), 0, dpToPx(Integer.parseInt(sharedPreferences.getString("marginsCountTextBottom", "0"))));
         dateText.setLayoutParams(dateTextParams);
-
 
         insideCardLayout.addView(mText);
 
         insideCardLayout.addView(imageButton);
 
-        if (myData.isOPT){
+        if (myData.isOPT) {
             dateText.setTextColor(getResources().getColor(R.color.textColorOPT));
             TextView mTex = new TextView(requireContext());
-            mTex.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize",  "12")) / 2));
+            mTex.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize", "12")) / 2));
             mTex.setText("Опт ціна від ящ");
             mTex.setTypeface(customFont);
             mTex.setGravity(Gravity.RIGHT);
@@ -211,8 +176,7 @@ public class ListFragment extends Fragment {
         insideCardLayout.addView(dateText);
 
 
-
-        if (myData.isOIOD){
+        if (myData.isOIOD) {
             ImageView imageView = new ImageView(requireContext());
 
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(dpToPx(20), dpToPx(20));
@@ -223,18 +187,31 @@ public class ListFragment extends Fragment {
             insideCardLayout.addView(imageView);
         }
 
+        if (!myData.video.isEmpty()) {
+            ImageView imageView = new ImageView(requireContext());
+
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(dpToPx(20), dpToPx(20));
+
+            Glide.with(requireContext()).load(R.drawable.movie_24dp_fill0_wght400_grad0_opsz24).into(imageView);
+
+            imageView.setLayoutParams(layoutParams);
+            insideCardLayout.addView(imageView);
+        }
+
         mCard.addView(insideCardLayout);
         parentLayout.addView(mCard);
     }
 
-    public Uri getImageUri(Context context, String imageName) {
-        Uri imageUri = null;
+    public Uri getMediaFileUri(Context context, String filePath) {
+        Uri mediaUri = null;
         ContentResolver contentResolver = context.getContentResolver();
 
-        Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-        String[] projection = { MediaStore.Images.Media._ID };
-        String selection = MediaStore.Images.Media.DISPLAY_NAME + " = ?";
-        String[] selectionArgs = new String[] { imageName };
+        Uri uri = MediaStore.Files.getContentUri("external");
+
+        String[] projection = {MediaStore.Files.FileColumns._ID};
+
+        String selection = MediaStore.Files.FileColumns.DATA + " = ?";
+        String[] selectionArgs = new String[]{filePath};
 
         Cursor cursor = contentResolver.query(
                 uri,
@@ -247,17 +224,17 @@ public class ListFragment extends Fragment {
         if (cursor != null) {
             try {
                 if (cursor.moveToFirst()) {
-                    @SuppressLint("Range") long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID));
-                    imageUri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Long.toString(id));
+                    @SuppressLint("Range") long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Files.FileColumns._ID));
+                    mediaUri = Uri.withAppendedPath(uri, Long.toString(id));
                 }
             } finally {
                 cursor.close();
             }
         } else {
-            Log.e("ImageLoader", "Cursor is null");
+            Log.e("MediaLoader", "Cursor is null");
         }
 
-        return imageUri;
+        return mediaUri;
     }
 
     private int dpToPx(int dp) {

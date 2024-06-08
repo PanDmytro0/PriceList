@@ -36,7 +36,7 @@
     <string name="passPrefTextGroups">Пароль зміни груп</string>
     <string name="marginsOfCardsPrefsText">Відступи між картками</string>
     <string name="accessGranted">Дякую!</string>
-    <string name="downloadImagesButton">Завантажити всі картинки</string>
+    <string name="downloadImagesButton">Завантажити картинки</string>
     <string name="updateFilesText">Оновити файли</string>
     <string name="prefTextMarginTop">Відступ назви зверху</string>
     <string name="prefTextMarginBottom">Відступ назви знизу</string>

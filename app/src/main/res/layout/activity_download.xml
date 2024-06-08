@@ -72,6 +72,32 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/downloadImagesButton"
+        app:layout_constraintBottom_toTopOf="@id/downloadPromotions" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/downloadPromotions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        style="@style/MyButton"
+        android:text="Завантажити акції"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/progressBar"
+        app:layout_constraintBottom_toTopOf="@id/downloadVideos" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/downloadVideos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        style="@style/MyButton"
+        android:text="Завантажити відео"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/downloadPromotions"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 

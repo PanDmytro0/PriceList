@@ -42,7 +42,11 @@ public class DownloadActivity extends AppCompatActivity {
         setContentView(R.layout.activity_download);
 
         MaterialButton materialButton = findViewById(R.id.updatePriceButton);
+
         MaterialButton downloadFiles = findViewById(R.id.downloadImagesButton);
+        MaterialButton downloadPromotionImages = findViewById(R.id.downloadPromotions);
+        MaterialButton downloadVideos = findViewById(R.id.downloadVideos);
+
         progressBar1 = findViewById(R.id.progressBar);
         percentageText = findViewById(R.id.percentage);
 
@@ -55,6 +59,80 @@ public class DownloadActivity extends AppCompatActivity {
             }
         });
 
+        downloadPromotionImages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                downloadPromotionImages.setActivated(false);
+                storage.getReference().child("promotions").child("image").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                    @Override
+                    public void onSuccess(ListResult listResult) {
+                        int counter = 0;
+                        int sizeOfFiles = listResult.getItems().size();
+
+                        for (StorageReference item: listResult.getItems()) {
+                            if (counter < sizeOfFiles) {
+                                Log.d("promotionImages", "filesTotal: " + sizeOfFiles + " , " + "downloaded: " + counter);
+                                counter++;
+                                item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        new FileDownloader().downloadPromotion(getApplicationContext(), new FileToDownload(item.getName(), uri.toString()), false);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+        downloadVideos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                downloadVideos.setActivated(false);
+                storage.getReference().child("video").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                    @Override
+                    public void onSuccess(ListResult listResult) {
+                        int counter = 0;
+                        int sizeOfFiles = listResult.getItems().size();
+
+                        for (StorageReference item: listResult.getItems()) {
+                            if (counter < sizeOfFiles) {
+                                Log.d("videosProps", "filesTotal: " + sizeOfFiles + " , " + "downloaded: " + counter);
+                                counter++;
+                                item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        new FileDownloader().downloadVideo(getApplicationContext(), new FileToDownload(item.getName(), uri.toString()));
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+
+                storage.getReference().child("promotions").child("video").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                    @Override
+                    public void onSuccess(ListResult listResult) {
+                        int counter = 0;
+                        int sizeOfFiles = listResult.getItems().size();
+
+                        for (StorageReference item: listResult.getItems()) {
+                            if (counter < sizeOfFiles) {
+                                Log.d("promotionVideos", "filesTotal: " + sizeOfFiles + " , " + "downloaded: " + counter);
+                                counter++;
+                                item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        new FileDownloader().downloadPromotion(getApplicationContext(), new FileToDownload(item.getName(), uri.toString()), true);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+        });
 
         downloadFiles.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -25,7 +25,7 @@ import java.util.List;
 public class ChangeDialog extends DialogFragment {
 
     List<ListFragment> m;
-    private MyFragmentPagerAdapter defadapter;
+    private final MyFragmentPagerAdapter defadapter;
 
     ChangeDialog(MyFragmentPagerAdapter defadapter) {
         this.defadapter = defadapter;

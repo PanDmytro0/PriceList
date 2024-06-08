@@ -35,12 +35,17 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d("android", "" + android.os.Build.VERSION.SDK_INT);
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
                     != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.READ_MEDIA_IMAGES}, 0);
+            }
+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_MEDIA_VIDEO}, 0);
             }
         } else {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -51,22 +56,17 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-
-
-//        findViewById(R.id.changeSizeButton).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(MainActivity.this, PassActivity.class);
-//                intent.putExtra("group", "set");
-//
-//                startActivity(intent);
-//            }
-//        });
-
         findViewById(R.id.updateButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, DownloadActivity.class));
+            }
+        });
+
+        findViewById(R.id.testButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, ChangeSizeActivity.class));
             }
         });
 

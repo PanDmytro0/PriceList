@@ -42,6 +42,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -69,10 +70,10 @@ public class ListActivity extends AppCompatActivity {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ListActivity.this);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.topBar);
+        Toolbar myToolbar = findViewById(R.id.topBar);
         setSupportActionBar(myToolbar);
 
-        Uri file = (Uri) getIntent().getParcelableExtra("file");
+        Uri file = getIntent().getParcelableExtra("file");
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -248,9 +249,7 @@ public class ListActivity extends AppCompatActivity {
 
                     String[] groups = getCellValueAsString(row.getCell(18)).split(",");
 
-                    for (String m: groups) {
-                        groupSet.add(m);
-                    }
+                    Collections.addAll(groupSet, groups);
 
 
                     if (name.equals("") && itemCount[0] > 1) {
@@ -399,7 +398,7 @@ public class ListActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    private BroadcastReceiver customBroadcastReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver customBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(ACTION_CUSTOM_BROADCAST)) {

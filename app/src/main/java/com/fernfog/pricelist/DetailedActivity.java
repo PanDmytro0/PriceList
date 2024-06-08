@@ -45,8 +45,6 @@ public class DetailedActivity extends AppCompatActivity {
     private MyFragmentPagerAdapter2 defadapter;
 
     FirebaseStorage storage = FirebaseStorage.getInstance();
-    StorageReference storageRef = storage.getReference();
-
 
     @SuppressLint("StaticFieldLeak")
     @Override
@@ -59,7 +57,7 @@ public class DetailedActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        Boolean action = intent.getBooleanExtra("action", false);
+        boolean action = intent.getBooleanExtra("action", false);
 
         if (action) {
             setContentView(R.layout.activity_detailed);
@@ -101,10 +99,11 @@ public class DetailedActivity extends AppCompatActivity {
             textViewCount.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize",  "12"))));
             textViewDesc.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize",  "12"))));
 
-            defadapter.addFragment(new ImageFragment(getImageUri(this,  intent.getStringExtra("photoLink") + ".jpg")));
+            defadapter.addFragment(new ImageFragment(getMediaFileUri(this,Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/priceList/" + intent.getStringExtra("photoLink") + ".jpg")));
+
 
             for (int i = 0; i <= 10; i++) {
-                Uri image = getImageUri(this,  intent.getStringExtra("photoLink") + "_" + i + ".jpg");
+                Uri image = getMediaFileUri(this,Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/priceList/" + intent.getStringExtra("photoLink") + "_" + i + ".jpg");
 
                 if (image != null) {
                     defadapter.addFragment((new ImageFragment(image)));
@@ -113,26 +112,22 @@ public class DetailedActivity extends AppCompatActivity {
             }
 
             String video = intent.getStringExtra("video");
-
             if (!video.isEmpty()) {
-                storageRef.child("video/" + video + ".mp4").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        defadapter.addFragment((new VideoFragment(Uri.parse(uri.toString()))));
-                    }
-                });
+                defadapter.addFragment(new VideoFragment(getMediaFileUri(DetailedActivity.this, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/priceList/videos/" + video + ".mp4")));
             }
         }
     }
 
-    public Uri getImageUri(Context context, String imageName) {
-        Uri imageUri = null;
+    public Uri getMediaFileUri(Context context, String filePath) {
+        Uri mediaUri = null;
         ContentResolver contentResolver = context.getContentResolver();
 
-        Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-        String[] projection = { MediaStore.Images.Media._ID };
-        String selection = MediaStore.Images.Media.DISPLAY_NAME + " = ?";
-        String[] selectionArgs = new String[] { imageName };
+        Uri uri = MediaStore.Files.getContentUri("external");
+
+        String[] projection = { MediaStore.Files.FileColumns._ID };
+
+        String selection = MediaStore.Files.FileColumns.DATA + " = ?";
+        String[] selectionArgs = new String[] { filePath };
 
         Cursor cursor = contentResolver.query(
                 uri,
@@ -145,17 +140,17 @@ public class DetailedActivity extends AppCompatActivity {
         if (cursor != null) {
             try {
                 if (cursor.moveToFirst()) {
-                    @SuppressLint("Range") long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID));
-                    imageUri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Long.toString(id));
+                    @SuppressLint("Range") long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Files.FileColumns._ID));
+                    mediaUri = Uri.withAppendedPath(uri, Long.toString(id));
                 }
             } finally {
                 cursor.close();
             }
         } else {
-            Log.e("ImageLoader", "Cursor is null");
+            Log.e("MediaLoader", "Cursor is null");
         }
 
-        return imageUri;
+        return mediaUri;
     }
 
     private int dpToPx(int dp) {
