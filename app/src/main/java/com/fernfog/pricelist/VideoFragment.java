@@ -42,23 +42,25 @@ public class VideoFragment extends Fragment {
         SharedPreferences sharedPref = requireContext().getSharedPreferences(
                 "MyPref", Context.MODE_PRIVATE);
 
-        playerView = view.findViewById(R.id.player_view);
+        try {
+            playerView = view.findViewById(R.id.player_view);
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dpToPx(Integer.parseInt(sharedPref.getString("imageSizeW", "100")) * 5), dpToPx(Integer.parseInt(sharedPref.getString("imageSizeH", "100")) * 5));
-        params.gravity = Gravity.CENTER;
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dpToPx(Integer.parseInt(sharedPref.getString("imageSizeW", "100")) * 5), dpToPx(Integer.parseInt(sharedPref.getString("imageSizeH", "100")) * 5));
+            params.gravity = Gravity.CENTER;
 
-        playerView.setLayoutParams(params);
+            playerView.setLayoutParams(params);
 
-        player = new ExoPlayer.Builder(requireContext()).build();
-        playerView.setPlayer(player);
+            player = new ExoPlayer.Builder(requireContext()).build();
+            playerView.setPlayer(player);
 
-        MediaItem mediaItem = MediaItem.fromUri(video);
-        player.setMediaItem(mediaItem);
+            MediaItem mediaItem = MediaItem.fromUri(video);
+            player.setMediaItem(mediaItem);
 
-        player.prepare();
-        player.play();
-
-
+            player.prepare();
+            player.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return view;
     }
 

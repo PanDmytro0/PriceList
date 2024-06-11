@@ -176,6 +176,13 @@ public class ListFragment extends Fragment {
         insideCardLayout.addView(dateText);
 
 
+        LinearLayout insideCard2 = new LinearLayout(requireContext());
+        insideCard2.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        insideCard2.setOrientation(LinearLayout.HORIZONTAL);
+
         if (myData.isOIOD) {
             ImageView imageView = new ImageView(requireContext());
 
@@ -184,21 +191,27 @@ public class ListFragment extends Fragment {
             Glide.with(requireContext()).load(R.drawable.atr_fill0_wght400_grad0_opsz24).into(imageView);
 
             imageView.setLayoutParams(layoutParams);
-            insideCardLayout.addView(imageView);
+            insideCard2.addView(imageView);
         }
 
-        if (!myData.video.isEmpty()) {
-            ImageView imageView = new ImageView(requireContext());
+        try {
+            if (!myData.video.isEmpty()) {
+                ImageView imageView = new ImageView(requireContext());
 
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(dpToPx(20), dpToPx(20));
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(dpToPx(20), dpToPx(20));
 
-            Glide.with(requireContext()).load(R.drawable.movie_24dp_fill0_wght400_grad0_opsz24).into(imageView);
+                Glide.with(requireContext()).load(R.drawable.movie_24dp_fill0_wght400_grad0_opsz24).into(imageView);
 
-            imageView.setLayoutParams(layoutParams);
-            insideCardLayout.addView(imageView);
+                imageView.setLayoutParams(layoutParams);
+                insideCard2.addView(imageView);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
+        insideCardLayout.addView(insideCard2);
         mCard.addView(insideCardLayout);
+
         parentLayout.addView(mCard);
     }
 

@@ -120,34 +120,39 @@ public class DetailedActivity extends AppCompatActivity {
 
     public Uri getMediaFileUri(Context context, String filePath) {
         Uri mediaUri = null;
-        ContentResolver contentResolver = context.getContentResolver();
 
-        Uri uri = MediaStore.Files.getContentUri("external");
+        try {
+            ContentResolver contentResolver = context.getContentResolver();
 
-        String[] projection = { MediaStore.Files.FileColumns._ID };
+            Uri uri = MediaStore.Files.getContentUri("external");
 
-        String selection = MediaStore.Files.FileColumns.DATA + " = ?";
-        String[] selectionArgs = new String[] { filePath };
+            String[] projection = { MediaStore.Files.FileColumns._ID };
 
-        Cursor cursor = contentResolver.query(
-                uri,
-                projection,
-                selection,
-                selectionArgs,
-                null
-        );
+            String selection = MediaStore.Files.FileColumns.DATA + " = ?";
+            String[] selectionArgs = new String[] { filePath };
 
-        if (cursor != null) {
-            try {
-                if (cursor.moveToFirst()) {
-                    @SuppressLint("Range") long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Files.FileColumns._ID));
-                    mediaUri = Uri.withAppendedPath(uri, Long.toString(id));
+            Cursor cursor = contentResolver.query(
+                    uri,
+                    projection,
+                    selection,
+                    selectionArgs,
+                    null
+            );
+
+            if (cursor != null) {
+                try {
+                    if (cursor.moveToFirst()) {
+                        @SuppressLint("Range") long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Files.FileColumns._ID));
+                        mediaUri = Uri.withAppendedPath(uri, Long.toString(id));
+                    }
+                } finally {
+                    cursor.close();
                 }
-            } finally {
-                cursor.close();
+            } else {
+                Log.e("MediaLoader", "Cursor is null");
             }
-        } else {
-            Log.e("MediaLoader", "Cursor is null");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return mediaUri;
