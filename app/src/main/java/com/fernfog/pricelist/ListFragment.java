@@ -98,7 +98,7 @@ public class ListFragment extends Fragment {
                 dpToPx(Integer.parseInt(sharedPreferences.getString("marginsOfCards", "16"))),
                 dpToPx(Integer.parseInt(sharedPreferences.getString("marginsOfCards", "16"))));
 
-        mCardParams.setGravity(Gravity.CENTER); // Center both horizontally and vertically within GridLayout
+        mCardParams.setGravity(Gravity.CENTER);
         mCard.setLayoutParams(mCardParams);
         mCard.setRadius(dpToPx(22));
         mCard.setCardElevation(dpToPx(4));
@@ -113,7 +113,7 @@ public class ListFragment extends Fragment {
 
         ImageButton imageButton = new ImageButton(requireContext());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dpToPx(Integer.parseInt(sharedPreferences.getString("imageSizeW", "100"))), dpToPx(Integer.parseInt(sharedPreferences.getString("imageSizeH", "100"))));
-        params.gravity = Gravity.CENTER;
+        params.gravity = Gravity.END;
         imageButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         imageButton.setLayoutParams(params);
         imageButton.setBackgroundColor(getResources().getColor(R.color.transparentColor));
@@ -160,22 +160,6 @@ public class ListFragment extends Fragment {
 
         insideCardLayout.addView(mText);
 
-        insideCardLayout.addView(imageButton);
-
-        if (myData.isOPT) {
-            dateText.setTextColor(getResources().getColor(R.color.textColorOPT));
-            TextView mTex = new TextView(requireContext());
-            mTex.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize", "12")) / 2));
-            mTex.setText("Опт ціна від ящ");
-            mTex.setTypeface(customFont);
-            mTex.setGravity(Gravity.RIGHT);
-            mTex.setTextColor(getResources().getColor(R.color.textColorOPT2));
-
-            insideCardLayout.addView(mTex);
-        }
-        insideCardLayout.addView(dateText);
-
-
         LinearLayout insideCard2 = new LinearLayout(requireContext());
         insideCard2.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -209,7 +193,23 @@ public class ListFragment extends Fragment {
             e.printStackTrace();
         }
 
+        insideCard2.addView(imageButton);
+
         insideCardLayout.addView(insideCard2);
+
+        if (myData.isOPT) {
+            dateText.setTextColor(getResources().getColor(R.color.textColorOPT));
+            TextView mTex = new TextView(requireContext());
+            mTex.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize", "12")) / 2));
+            mTex.setText("Опт ціна від ящ");
+            mTex.setTypeface(customFont);
+            mTex.setGravity(Gravity.RIGHT);
+            mTex.setTextColor(getResources().getColor(R.color.textColorOPT2));
+
+            insideCardLayout.addView(mTex);
+        }
+        insideCardLayout.addView(dateText);
+
         mCard.addView(insideCardLayout);
 
         parentLayout.addView(mCard);
