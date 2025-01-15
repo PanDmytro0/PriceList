@@ -36,6 +36,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import org.apache.poi.sl.usermodel.Line;
 
@@ -44,6 +46,8 @@ import java.util.ArrayList;
 public class ListFragment extends Fragment {
     private final ArrayList<MyData> myDataArrayList;
     private final boolean a;
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    String gif = "link";
 
     public ListFragment(ArrayList<MyData> myDataArrayList, boolean a) {
         this.a = a;
@@ -91,6 +95,15 @@ public class ListFragment extends Fragment {
     }
 
     private void addCardToView(MyData myData, GridLayout parentLayout) {
+            storage.getReference().child("gifs/" + myData.getPhotoLink() +  ".gif").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    if (uri != null) {
+                        gif = uri.toString();
+                    }
+                }
+            });
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
         CardView mCard = new CardView(requireContext());
         GridLayout.LayoutParams mCardParams = new GridLayout.LayoutParams();
@@ -134,6 +147,7 @@ public class ListFragment extends Fragment {
             intent.putExtra("desc", myData.getDescription());
             intent.putExtra("action", false);
             intent.putExtra("video", myData.getVideo());
+            intent.putExtra("gif", gif);
             startActivity(intent);
         });
 

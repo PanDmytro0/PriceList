@@ -99,8 +99,9 @@ public class DetailedActivity extends AppCompatActivity {
             textViewCount.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize",  "12"))));
             textViewDesc.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize",  "12"))));
 
-            defadapter.addFragment(new ImageFragment(getMediaFileUri(this,Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/priceList/" + intent.getStringExtra("photoLink") + ".jpg")));
+            defadapter.addFragment(new GifFragment(intent.getStringExtra("gif")));
 
+            defadapter.addFragment(new ImageFragment(getMediaFileUri(this,Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/priceList/" + intent.getStringExtra("photoLink") + ".jpg")));
 
             for (int i = 0; i <= 10; i++) {
                 Uri image = getMediaFileUri(this,Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/priceList/" + intent.getStringExtra("photoLink") + "_" + i + ".jpg");
