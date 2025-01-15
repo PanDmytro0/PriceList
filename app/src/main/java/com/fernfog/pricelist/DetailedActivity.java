@@ -115,6 +115,25 @@ public class DetailedActivity extends AppCompatActivity {
             if (!video.isEmpty()) {
                 defadapter.addFragment(new VideoFragment(getMediaFileUri(DetailedActivity.this, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/priceList/videos/" + video + ".mp4")));
             }
+
+            TextView textView1 = findViewById(R.id.ImageCountText);
+
+            int pos = viewPager2.getCurrentItem();
+            pos+=1;
+
+            textView1.setText(pos + "/" + defadapter.getItemCount());
+
+            viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                @Override
+                public void onPageSelected(int position) {
+                    super.onPageSelected(position);
+
+                    int pos = viewPager2.getCurrentItem();
+                    pos+=1;
+
+                    textView1.setText(pos + "/" + defadapter.getItemCount());
+                }
+            });
         }
     }
 

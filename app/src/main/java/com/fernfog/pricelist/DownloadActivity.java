@@ -1,25 +1,45 @@
 package com.fernfog.pricelist;
 
+import android.annotation.SuppressLint;
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.internal.Storage;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
@@ -35,11 +55,20 @@ public class DownloadActivity extends AppCompatActivity {
     private boolean isRunning = true;
     ProgressBar progressBar1;
     TextView percentageText;
+    ImageView imageView;
+    boolean state = true;
+
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(DownloadActivity.this);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);
+
+        registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
         MaterialButton materialButton = findViewById(R.id.updatePriceButton);
 
@@ -47,9 +76,34 @@ public class DownloadActivity extends AppCompatActivity {
         MaterialButton downloadPromotionImages = findViewById(R.id.downloadPromotions);
         MaterialButton downloadVideos = findViewById(R.id.downloadVideos);
         MaterialButton downloadAllButton = findViewById(R.id.downloadAll);
+        MaterialButton partUpdateButton = findViewById(R.id.partUpdateButton);
+
+        Spinner spinner = findViewById(R.id.skladSpinner);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.spinner_array,
+                R.layout.spinner_item
+        );
+
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                editor.putString("sklad", parent.getItemAtPosition(position).toString());
+                editor.apply();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         progressBar1 = findViewById(R.id.progressBar);
         percentageText = findViewById(R.id.percentage);
+        imageView = findViewById(R.id.indicator);
 
         file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "priceList/");
 
@@ -64,10 +118,21 @@ public class DownloadActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 downloadAllButton.setActivated(false);
-                downloadPrice();
                 downloadImages();
                 downloadVideos();
                 downloadPromotions();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(5000);
+                            downloadPrice();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }).start();
             }
         });
 
@@ -83,7 +148,7 @@ public class DownloadActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 downloadVideos.setActivated(false);
-               downloadVideos();
+                downloadVideos();
             }
         });
 
@@ -100,6 +165,14 @@ public class DownloadActivity extends AppCompatActivity {
             public void onClick(View v) {
                 materialButton.setActivated(false);
                 downloadPrice();
+            }
+        });
+
+        partUpdateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                partUpdateButton.setActivated(false);
+                partUpdate();
             }
         });
 
@@ -134,10 +207,21 @@ public class DownloadActivity extends AppCompatActivity {
             public void onSuccess(Uri uri) {
                 FileDownloader fileDownloader = new FileDownloader();
                 fileDownloader.downloadFile(getApplicationContext(), uri.toString(), "price.xlsm");
-                Toast.makeText(DownloadActivity.this, getString(R.string.priceUpdatedText), Toast.LENGTH_LONG).show();
             }
         });
     }
+
+    BroadcastReceiver onComplete=new BroadcastReceiver() {
+        public void onReceive(Context ctxt, Intent intent) {
+            if (state) {
+                imageView.setColorFilter(Color.argb(128,0, 128, 0));
+                state = false;
+            } else {
+                imageView.setColorFilter(Color.argb(128,128, 0, 0));
+                state = true;
+            }
+        }
+    };
 
     void downloadImages() {
         storage.getReference().child("images").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
@@ -152,7 +236,7 @@ public class DownloadActivity extends AppCompatActivity {
                         item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
-                                new FileDownloader().downloadImage(getApplicationContext(), new FileToDownload(item.getName(), uri.toString()));
+                                new FileDownloader().downloadImage(getApplicationContext(), new FileToDownload(item.getName(), uri.toString()), false);
                             }
                         });
                     } else {
@@ -161,6 +245,29 @@ public class DownloadActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    void partUpdate() {
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        mDatabase.child("файли_для_оновлення").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                for (String i: task.getResult().getValue().toString().split(",")) {
+                    Log.d("tagtagtag", i);
+                    StorageReference storageRef = storage.getReference();
+                    storageRef.child("images").child(i+".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            // new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "priceList/promotions/").delete();
+                            new FileDownloader().downloadImage(getApplicationContext(), new FileToDownload(i + ".jpg", uri.toString()), true);
+                        }
+                    });
+                }
+            }
+        });
+
+
     }
 
     void downloadPromotions() {
@@ -177,6 +284,8 @@ public class DownloadActivity extends AppCompatActivity {
                         item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
+                                new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "priceList/promotions/").delete();
+
                                 new FileDownloader().downloadPromotion(getApplicationContext(), new FileToDownload(item.getName(), uri.toString()), false);
                             }
                         });
@@ -229,8 +338,6 @@ public class DownloadActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
     void updateProgress() {
         try {

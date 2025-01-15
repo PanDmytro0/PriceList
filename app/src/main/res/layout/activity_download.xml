@@ -33,6 +33,19 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/helloText"
+        app:layout_constraintBottom_toTopOf="@id/partUpdateButton" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/partUpdateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        style="@style/MyButton"
+        android:text="Частково оновити картинки"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/updatePriceButton"
         app:layout_constraintBottom_toTopOf="@id/downloadImagesButton" />
 
     <com.google.android.material.button.MaterialButton
@@ -45,7 +58,7 @@
 
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/updatePriceButton"
+        app:layout_constraintTop_toBottomOf="@id/partUpdateButton"
         app:layout_constraintBottom_toTopOf="@id/progressBar" />
 
     <TextView
@@ -113,6 +126,27 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/downloadVideos"
+        app:layout_constraintBottom_toTopOf="@id/skladSpinner" />
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+
+        android:id="@+id/indicator"
+
+        app:layout_constraintRight_toRightOf="@id/downloadAll"
+        app:layout_constraintBottom_toTopOf="@id/downloadAll"
+
+        android:src="@drawable/download_for_offline_24dp_fill0_wght400_grad0_opsz24" />
+
+    <Spinner
+        android:id="@+id/skladSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/downloadAll"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 

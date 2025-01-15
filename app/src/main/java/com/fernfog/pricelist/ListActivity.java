@@ -42,6 +42,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -61,6 +62,8 @@ public class ListActivity extends AppCompatActivity {
     public Integer index = 0;
 
     private DatabaseReference mDatabase;
+
+    HashSet<String[]> skladi = new HashSet<>();
 
 
     @Override
@@ -247,10 +250,26 @@ public class ListActivity extends AppCompatActivity {
                     String name = getCellValueAsString(row.getCell(0));
                     dataN[0] = getCellValueAsString(row.getCell(13));
 
+                    String sklad = getCellValueAsString(row.getCell(23));
+
+                    boolean skladState = true;
+
+                    for (String i: sklad.split(",")) {
+                        if (sklad.isEmpty()) {
+                            skladState = false;
+                        }
+                        else if (i.trim().contains(sharedPreferences.getString("sklad", ""))) {
+                            skladState = false;
+                        }
+                    }
+
+                    if (skladState) {
+                        continue;
+                    }
+
                     String[] groups = getCellValueAsString(row.getCell(18)).split(",");
 
                     Collections.addAll(groupSet, groups);
-
 
                     if (name.equals("") && itemCount[0] > 1) {
                         addFragmentAndUpdateAdapter(arrayList, false);
@@ -293,9 +312,24 @@ public class ListActivity extends AppCompatActivity {
                     }
 
                     if (!dataN[0].equals("")) {
-                        ArrayList<MyData> arrayList_ = new ArrayList<>();
-                        arrayList_.add(new MyData(dataN[0]));
-                        addFragmentAndUpdateAdapter(arrayList_, true);
+                        boolean dataSkladState = true;
+
+                        for (String i: sklad.split(",")) {
+                            if (sklad.isEmpty()) {
+                                dataSkladState = false;
+                            }
+                            else if (i.trim().contains(sharedPreferences.getString("sklad", ""))) {
+                                dataSkladState = false;
+                            }
+                        }
+
+                        if (dataSkladState) {
+                            continue;
+                        } else {
+                            ArrayList<MyData> arrayList_ = new ArrayList<>();
+                            arrayList_.add(new MyData(dataN[0]));
+                            addFragmentAndUpdateAdapter(arrayList_, true);
+                        }
                     }
 
                 } catch (Exception e) {
@@ -304,7 +338,6 @@ public class ListActivity extends AppCompatActivity {
 
             }
 
-            Log.wtf("data", groupSet.toString());
             workbook.close();
 
             if (!arrayList.isEmpty()) {
@@ -324,6 +357,8 @@ public class ListActivity extends AppCompatActivity {
         }
 
         Log.d("changes", "" + changes);
+
+        Log.wtf("data", skladi.toString());
     }
 
     private void addFragmentAndUpdateAdapter(ArrayList<MyData> arrayList, boolean a) {

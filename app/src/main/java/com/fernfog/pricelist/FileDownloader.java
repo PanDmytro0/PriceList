@@ -6,18 +6,35 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Debug;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class FileDownloader {
 
-    public void downloadImage(Context context, FileToDownload fileToDownload) {
+    public long downloadImage(Context context, FileToDownload fileToDownload, boolean partUp) {
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "priceList/" + fileToDownload.name);
+        long downloadId = 0;
 
         if (file.exists()) {
+            if (partUp) {
+                file.delete();
+                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(fileToDownload.url));
+
+                request.setTitle(fileToDownload.name);
+
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "priceList/" + fileToDownload.name);
+
+                DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+                downloadId = downloadManager.enqueue(request);
+            }
+
         } else {
             DownloadManager.Request request = new DownloadManager.Request(Uri.parse(fileToDownload.url));
 
@@ -26,12 +43,15 @@ public class FileDownloader {
             request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "priceList/" + fileToDownload.name);
 
             DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-            long downloadId = downloadManager.enqueue(request);
+            downloadId = downloadManager.enqueue(request);
         }
+
+        return downloadId;
     }
 
-    public void downloadPromotion(Context context, FileToDownload fileToDownload, boolean isVideo) {
+    public long downloadPromotion(Context context, FileToDownload fileToDownload, boolean isVideo) {
         File file;
+        long downloadId = 0;
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(fileToDownload.url));
         request.setTitle(fileToDownload.name);
 
@@ -48,12 +68,15 @@ public class FileDownloader {
         if (file.exists()) {
         } else {
             DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-            long downloadId = downloadManager.enqueue(request);
+            downloadId = downloadManager.enqueue(request);
         }
+
+        return downloadId;
     }
 
-    public void downloadVideo(Context context, FileToDownload fileToDownload) {
+    public long downloadVideo(Context context, FileToDownload fileToDownload) {
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "priceList/videos/" + fileToDownload.name);
+        long downloadId = 0;
 
         if (file.exists()) {
         } else {
@@ -64,11 +87,12 @@ public class FileDownloader {
             request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "priceList/videos/" + fileToDownload.name);
 
             DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-            long downloadId = downloadManager.enqueue(request);
+            downloadId = downloadManager.enqueue(request);
         }
+        return downloadId;
     }
 
-    public void downloadFile(Context context, String fileUrl, String fileName) {
+    public long downloadFile(Context context, String fileUrl, String fileName) {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(fileUrl));
 
         request.setTitle(fileName);
@@ -76,7 +100,7 @@ public class FileDownloader {
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOCUMENTS, "priceList/" + fileName);
 
         DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-        long downloadId = downloadManager.enqueue(request);
+        return downloadManager.enqueue(request);
     }
 
     public static boolean deleteFileByPath(Context context, String filePath) {

@@ -9,10 +9,10 @@ android {
 
     defaultConfig {
         applicationId "com.fernfog.pricelist"
-        minSdk 29
+        minSdk 28
         targetSdk 34
         versionCode 1
-        versionName "1.403"
+        versionName "1.601"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -43,6 +43,8 @@ dependencies {
     implementation 'org.apache.poi:poi-ooxml:5.2.3'
 
     implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
+
+    implementation 'com.jsibbold:zoomage:1.3.1'
 
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'

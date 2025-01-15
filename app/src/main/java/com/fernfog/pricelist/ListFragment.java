@@ -23,6 +23,7 @@ import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -35,6 +36,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.ui.PlayerView;
+
+import org.apache.poi.sl.usermodel.Line;
+
 import java.util.ArrayList;
 
 public class ListFragment extends Fragment {
@@ -107,13 +111,16 @@ public class ListFragment extends Fragment {
         LinearLayout insideCardLayout = new LinearLayout(requireContext());
         insideCardLayout.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+                LinearLayout.LayoutParams.MATCH_PARENT
         ));
         insideCardLayout.setOrientation(LinearLayout.VERTICAL);
 
         ImageButton imageButton = new ImageButton(requireContext());
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dpToPx(Integer.parseInt(sharedPreferences.getString("imageSizeW", "100"))), dpToPx(Integer.parseInt(sharedPreferences.getString("imageSizeH", "100"))));
-        params.gravity = Gravity.END;
+        imageButton.setId(View.generateViewId());
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(dpToPx(Integer.parseInt(sharedPreferences.getString("imageSizeW", "100"))), dpToPx(Integer.parseInt(sharedPreferences.getString("imageSizeH", "100"))));
+
+        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+
         imageButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         imageButton.setLayoutParams(params);
         imageButton.setBackgroundColor(getResources().getColor(R.color.transparentColor));
@@ -160,42 +167,62 @@ public class ListFragment extends Fragment {
 
         insideCardLayout.addView(mText);
 
-        LinearLayout insideCard2 = new LinearLayout(requireContext());
-        insideCard2.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        ));
-        insideCard2.setOrientation(LinearLayout.HORIZONTAL);
+        RelativeLayout relativeLayout = new RelativeLayout(requireContext());
+        relativeLayout.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(140)));
+        relativeLayout.addView(imageButton);
 
         if (myData.isOIOD) {
             ImageView imageView = new ImageView(requireContext());
 
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(dpToPx(20), dpToPx(20));
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(dpToPx(20), dpToPx(20));
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 
             Glide.with(requireContext()).load(R.drawable.atr_fill0_wght400_grad0_opsz24).into(imageView);
 
             imageView.setLayoutParams(layoutParams);
-            insideCard2.addView(imageView);
+            relativeLayout.addView(imageView);
         }
 
         try {
             if (!myData.video.isEmpty()) {
                 ImageView imageView = new ImageView(requireContext());
 
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(dpToPx(20), dpToPx(20));
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(dpToPx(20), dpToPx(20));
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 
                 Glide.with(requireContext()).load(R.drawable.movie_24dp_fill0_wght400_grad0_opsz24).into(imageView);
 
                 imageView.setLayoutParams(layoutParams);
-                insideCard2.addView(imageView);
+                relativeLayout.addView(imageView);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        insideCard2.addView(imageButton);
+//        // Combined condition and ImageView placement
+//        if (myData.isOIOD || !myData.video.isEmpty()) {
+//            ImageView imageView = new ImageView(requireContext());
+//
+//            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(dpToPx(20), dpToPx(20));
+//
+//            if (myData.isOIOD) {
+//                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+//                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+//            } else {
+//                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+//                layoutParams.addRule(RelativeLayout.BELOW, imageButton.getId());
+//            }
+//
+//            imageView.setLayoutParams(layoutParams);
+//
+//            Glide.with(requireContext())
+//                    .load(myData.isOIOD ? R.drawable.atr_fill0_wght400_grad0_opsz24 : R.drawable.movie_24dp_fill0_wght400_grad0_opsz24)
+//                    .into(imageView);
+//
+//            relativeLayout.addView(imageView);
+//        }
 
-        insideCardLayout.addView(insideCard2);
+        insideCardLayout.addView(relativeLayout);
 
         if (myData.isOPT) {
             dateText.setTextColor(getResources().getColor(R.color.textColorOPT));
@@ -214,6 +241,7 @@ public class ListFragment extends Fragment {
 
         parentLayout.addView(mCard);
     }
+
 
     public Uri getMediaFileUri(Context context, String filePath) {
         Uri mediaUri = null;
