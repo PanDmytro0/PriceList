@@ -92,6 +92,24 @@ public class FileDownloader {
         return downloadId;
     }
 
+    public long downloadGif(Context context, FileToDownload fileToDownload) {
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "priceList/gifs/" + fileToDownload.name);
+        long downloadId = 0;
+
+        if (file.exists()) {
+        } else {
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(fileToDownload.url));
+
+            request.setTitle(fileToDownload.name);
+
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "priceList/gifs/" + fileToDownload.name);
+
+            DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+            downloadId = downloadManager.enqueue(request);
+        }
+        return downloadId;
+    }
+
     public long downloadFile(Context context, String fileUrl, String fileName) {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(fileUrl));
 

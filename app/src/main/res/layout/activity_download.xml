@@ -17,101 +17,133 @@
         android:textColor="@color/white"
         android:textSize="50dp"
 
-        app:layout_constraintBottom_toTopOf="@id/updatePriceButton"
+        app:layout_constraintBottom_toTopOf="@id/scroll"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/updatePriceButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        style="@style/MyButton"
-        android:text="@string/updatePriceText"
-
+    <ScrollView
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+
+        android:id="@+id/scroll"
+
         app:layout_constraintTop_toBottomOf="@id/helloText"
-        app:layout_constraintBottom_toTopOf="@id/partUpdateButton" />
+        app:layout_constraintBottom_toTopOf="@id/downloadAll"
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/partUpdateButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="400dp">
 
-        style="@style/MyButton"
-        android:text="Частково оновити картинки"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/updatePriceButton"
-        app:layout_constraintBottom_toTopOf="@id/downloadImagesButton" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/updatePriceButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/downloadImagesButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+                style="@style/MyButton"
+                android:text="@string/updatePriceText"
 
-        style="@style/MyButton"
-        android:text="@string/downloadImagesButton"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/partUpdateButton" />
 
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/partUpdateButton"
-        app:layout_constraintBottom_toTopOf="@id/progressBar" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/partUpdateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
 
-    <TextView
-        android:id="@+id/percentage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+                style="@style/MyButton"
+                android:text="Частково оновити картинки"
 
-        android:fontFamily="@font/marmelad"
-        android:text="1%"
-        android:textColor="@color/white"
-        android:textSize="15dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/updatePriceButton"
+                app:layout_constraintBottom_toTopOf="@id/downloadImagesButton" />
 
-        app:layout_constraintBottom_toTopOf="@id/progressBar"
-        app:layout_constraintRight_toRightOf="@id/progressBar" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/downloadImagesButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="350dp"
-        android:layout_height="50dp"
-        android:max="100"
-        android:progress="1"
+                style="@style/MyButton"
+                android:text="@string/downloadImagesButton"
 
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/downloadImagesButton"
-        app:layout_constraintBottom_toTopOf="@id/downloadPromotions" />
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/partUpdateButton"
+                app:layout_constraintBottom_toTopOf="@id/progressBar" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/downloadPromotions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+            <TextView
+                android:id="@+id/percentage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
 
-        style="@style/MyButton"
-        android:text="Завантажити акції"
+                android:fontFamily="@font/marmelad"
+                android:text="1%"
+                android:textColor="@color/white"
+                android:textSize="15dp"
 
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/progressBar"
-        app:layout_constraintBottom_toTopOf="@id/downloadVideos" />
+                app:layout_constraintBottom_toTopOf="@id/progressBar"
+                app:layout_constraintRight_toRightOf="@id/progressBar" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/downloadVideos"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="350dp"
+                android:layout_height="50dp"
+                android:max="100"
+                android:progress="1"
 
-        style="@style/MyButton"
-        android:text="Завантажити відео"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/downloadImagesButton"
+                app:layout_constraintBottom_toTopOf="@id/downloadPromotions" />
 
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/downloadPromotions"
-        app:layout_constraintBottom_toTopOf="@id/downloadAll" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/downloadPromotions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                style="@style/MyButton"
+                android:text="@string/downloadPromotions"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/progressBar"
+                app:layout_constraintBottom_toTopOf="@id/downloadVideos" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/downloadVideos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                style="@style/MyButton"
+                android:text="@string/downloadVideos"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/downloadPromotions"
+                app:layout_constraintBottom_toTopOf="@id/downloadGifs" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/downloadGifs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                style="@style/MyButton"
+                android:text="@string/downloadGifs"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/downloadVideos"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/downloadAll"
@@ -125,7 +157,7 @@
 
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/downloadVideos"
+        app:layout_constraintTop_toBottomOf="@id/scroll"
         app:layout_constraintBottom_toTopOf="@id/skladSpinner" />
 
     <ImageView

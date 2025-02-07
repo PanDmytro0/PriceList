@@ -99,38 +99,21 @@ public class ListFragment extends Fragment {
         Intent intent = new Intent(requireContext(), DetailedActivity.class);
         ImageButton imageButton = new ImageButton(requireContext());
 
-            storage.getReference().child("gifs/" + myData.getPhotoLink() +  ".gif").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    if (uri != null) {
-                        intent.putExtra("gif", uri.toString());
+        Uri gif = getMediaFileUri(requireContext(),Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/priceList/gifs/" + myData.photoLink + ".gif");
 
-                        try {
-                            if (!uri.toString().isEmpty()) {
-                                Glide.with(requireContext())
-                                        .load(uri.toString())
-                                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                        .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
-                                        .into(imageButton);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Glide.with(requireContext())
-                            .load(getMediaFileUri(requireContext(), Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/priceList/" + myData.photoLink + ".jpg"))
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
-                            .into(imageButton);
-                }
-            });
-
-
-
+        if (gif != null) {
+            Glide.with(requireContext())
+                    .load(gif)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
+                    .into(imageButton);
+        } else {
+            Glide.with(requireContext())
+                    .load(getMediaFileUri(requireContext(), Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/priceList/" + myData.photoLink + ".jpg"))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
+                    .into(imageButton);
+        }
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
         CardView mCard = new CardView(requireContext());
@@ -257,7 +240,7 @@ public class ListFragment extends Fragment {
 
         insideCardLayout.addView(relativeLayout);
 
-        if (myData.isOPT) {
+        /*if (myData.isOPT) {
             dateText.setTextColor(getResources().getColor(R.color.textColorOPT));
             TextView mTex = new TextView(requireContext());
             mTex.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize", "12")) / 2));
@@ -267,7 +250,7 @@ public class ListFragment extends Fragment {
             mTex.setTextColor(getResources().getColor(R.color.textColorOPT2));
 
             insideCardLayout.addView(mTex);
-        }
+        }*/
         insideCardLayout.addView(dateText);
 
         mCard.addView(insideCardLayout);

@@ -77,6 +77,7 @@ public class DownloadActivity extends AppCompatActivity {
         MaterialButton downloadVideos = findViewById(R.id.downloadVideos);
         MaterialButton downloadAllButton = findViewById(R.id.downloadAll);
         MaterialButton partUpdateButton = findViewById(R.id.partUpdateButton);
+        MaterialButton downloadGifsButton = findViewById(R.id.downloadGifs);
 
         Spinner spinner = findViewById(R.id.skladSpinner);
 
@@ -121,6 +122,7 @@ public class DownloadActivity extends AppCompatActivity {
                 downloadImages();
                 downloadVideos();
                 downloadPromotions();
+                downloadGifs();
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -157,6 +159,14 @@ public class DownloadActivity extends AppCompatActivity {
             public void onClick(View v) {
                 downloadFiles.setActivated(false);
                 downloadImages();
+            }
+        });
+
+        downloadGifsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                downloadGifsButton.setActivated(false);
+                downloadGifs();
             }
         });
 
@@ -331,6 +341,29 @@ public class DownloadActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Uri uri) {
                                 new FileDownloader().downloadPromotion(getApplicationContext(), new FileToDownload(item.getName(), uri.toString()), true);
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    }
+
+    void downloadGifs() {
+        storage.getReference().child("gifs").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
+                int counter = 0;
+                int sizeOfFiles = listResult.getItems().size();
+
+                for (StorageReference item : listResult.getItems()) {
+                    if (counter < sizeOfFiles) {
+                        Log.d("gifsProps", "filesTotal: " + sizeOfFiles + " , " + "downloaded: " + counter);
+                        counter++;
+                        item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                new FileDownloader().downloadGif(getApplicationContext(), new FileToDownload(item.getName(), uri.toString()));
                             }
                         });
                     }

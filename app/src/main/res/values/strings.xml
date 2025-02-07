@@ -43,5 +43,8 @@
     <string name="prefCountTextMarginTop">Відступ кількості зверху</string>
     <string name="prefCountTextMarginBottom">Відступ кількості знизу</string>
     <string name="priceUpdatedText">Прайс оновлено!</string>
+    <string name="downloadPromotions">Завантажити акції</string>
+    <string name="downloadVideos">Завантажити відео</string>
+    <string name="downloadGifs">Завантажити гіфки</string>
 
 </resources>

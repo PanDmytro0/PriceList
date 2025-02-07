@@ -22,9 +22,9 @@ import com.jsibbold.zoomage.ZoomageView;
 
 public class GifFragment extends Fragment {
 
-    String image;
+    Uri image;
 
-    GifFragment(String image) {
+    GifFragment(Uri image) {
         this.image = image;
     }
 
