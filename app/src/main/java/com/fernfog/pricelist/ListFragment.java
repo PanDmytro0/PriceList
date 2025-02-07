@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
@@ -36,6 +37,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 
@@ -47,7 +49,6 @@ public class ListFragment extends Fragment {
     private final ArrayList<MyData> myDataArrayList;
     private final boolean a;
     FirebaseStorage storage = FirebaseStorage.getInstance();
-    String gif = "link";
 
     public ListFragment(ArrayList<MyData> myDataArrayList, boolean a) {
         this.a = a;
@@ -94,15 +95,42 @@ public class ListFragment extends Fragment {
         return view;
     }
 
-    private void addCardToView(MyData myData, GridLayout parentLayout) {
+    public void addCardToView(MyData myData, GridLayout parentLayout) {
+        Intent intent = new Intent(requireContext(), DetailedActivity.class);
+        ImageButton imageButton = new ImageButton(requireContext());
+
             storage.getReference().child("gifs/" + myData.getPhotoLink() +  ".gif").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
                     if (uri != null) {
-                        gif = uri.toString();
+                        intent.putExtra("gif", uri.toString());
+
+                        try {
+                            if (!uri.toString().isEmpty()) {
+                                Glide.with(requireContext())
+                                        .load(uri.toString())
+                                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                        .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
+                                        .into(imageButton);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Glide.with(requireContext())
+                            .load(getMediaFileUri(requireContext(), Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/priceList/" + myData.photoLink + ".jpg"))
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
+                            .into(imageButton);
+                }
             });
+
+
+
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
         CardView mCard = new CardView(requireContext());
@@ -128,7 +156,6 @@ public class ListFragment extends Fragment {
         ));
         insideCardLayout.setOrientation(LinearLayout.VERTICAL);
 
-        ImageButton imageButton = new ImageButton(requireContext());
         imageButton.setId(View.generateViewId());
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(dpToPx(Integer.parseInt(sharedPreferences.getString("imageSizeW", "100"))), dpToPx(Integer.parseInt(sharedPreferences.getString("imageSizeH", "100"))));
 
@@ -139,7 +166,6 @@ public class ListFragment extends Fragment {
         imageButton.setBackgroundColor(getResources().getColor(R.color.transparentColor));
 
         imageButton.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), DetailedActivity.class);
             intent.putExtra("photoLink", myData.getPhotoLink());
             intent.putExtra("name", myData.getName());
             intent.putExtra("count", myData.getCount());
@@ -147,15 +173,8 @@ public class ListFragment extends Fragment {
             intent.putExtra("desc", myData.getDescription());
             intent.putExtra("action", false);
             intent.putExtra("video", myData.getVideo());
-            intent.putExtra("gif", gif);
             startActivity(intent);
         });
-
-        Glide.with(requireContext())
-                .load(getMediaFileUri(requireContext(), Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/priceList/" + myData.photoLink + ".jpg"))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
-                .into(imageButton);
 
         TextView mText = new TextView(requireContext());
         mText.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize", "12"))));
