@@ -91,6 +91,15 @@ public class ListActivity extends AppCompatActivity {
             }
         });
 
+        mDatabase.child("розмір_шрифту_2").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                sharedPreferencesEditor.putString("fontSize2", task.getResult().getValue().toString());
+                sharedPreferencesEditor.apply();
+
+            }
+        });
+
         mDatabase.child("висота_картинки").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -159,7 +168,6 @@ public class ListActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 sharedPreferencesEditor.putString("passGroups", task.getResult().getValue().toString());
                 sharedPreferencesEditor.apply();
-
             }
         });
 
@@ -286,20 +294,24 @@ public class ListActivity extends AppCompatActivity {
                         String check__ = getCellValueAsString(row.getCell(11));
                         String nameOfGroup = getCellValueAsString(row.getCell(19));
                         String video = getCellValueAsString(row.getCell(20));
+                        String sale  = getCellValueAsString(row.getCell(29));
 
                         if (check__.equals("+")) {
                             MyData myData = new MyData(name, id, count, inPack, description, false, true, nameOfGroup);
                             myData.setVideo(video);
+                            myData.setSale(sale);
                             arrayList.add((MyData) myData.clone());
                             itemCount[0]++;
                         } else if (check.equals("+")){
                             MyData myData = new MyData(name, id, count, inPack, description, true, false, nameOfGroup);
                             myData.setVideo(video);
+                            myData.setSale(sale);
                             arrayList.add((MyData) myData.clone());
                             itemCount[0]++;
                         } else {
                             MyData myData = new MyData(name, id, count, inPack, description, nameOfGroup);
                             myData.setVideo(video);
+                            myData.setSale(sale);
                             arrayList.add((MyData) myData.clone());
                             itemCount[0]++;
                         }

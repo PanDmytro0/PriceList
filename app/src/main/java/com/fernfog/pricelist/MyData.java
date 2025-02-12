@@ -11,6 +11,7 @@ public class MyData implements Cloneable {
     boolean isOPT;
     boolean isOIOD;
     String video;
+    String sale;
 
     MyData(String name, String photoLink, String count, String inPack, String description) {
         this.name = name;
@@ -79,6 +80,14 @@ public class MyData implements Cloneable {
 
     public void setVideo(String video) {
         this.video = video;
+    }
+
+    public String getSale() {
+        return sale;
+    }
+
+    public void setSale(String sale) {
+        this.sale = sale;
     }
 
     @Override

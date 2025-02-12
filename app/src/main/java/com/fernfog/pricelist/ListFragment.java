@@ -99,22 +99,6 @@ public class ListFragment extends Fragment {
         Intent intent = new Intent(requireContext(), DetailedActivity.class);
         ImageButton imageButton = new ImageButton(requireContext());
 
-        Uri gif = getMediaFileUri(requireContext(),Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/priceList/gifs/" + myData.photoLink + ".gif");
-
-        if (gif != null) {
-            Glide.with(requireContext())
-                    .load(gif)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
-                    .into(imageButton);
-        } else {
-            Glide.with(requireContext())
-                    .load(getMediaFileUri(requireContext(), Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/priceList/" + myData.photoLink + ".jpg"))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
-                    .into(imageButton);
-        }
-
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
         CardView mCard = new CardView(requireContext());
         GridLayout.LayoutParams mCardParams = new GridLayout.LayoutParams();
@@ -240,22 +224,39 @@ public class ListFragment extends Fragment {
 
         insideCardLayout.addView(relativeLayout);
 
-        /*if (myData.isOPT) {
-            dateText.setTextColor(getResources().getColor(R.color.textColorOPT));
+        if (!myData.getSale().isEmpty()) {
+//            dateText.setTextColor(getResources().getColor(R.color.textColorOPT));
             TextView mTex = new TextView(requireContext());
-            mTex.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize", "12")) / 2));
-            mTex.setText("Опт ціна від ящ");
-            mTex.setTypeface(customFont);
+            mTex.setTextSize(dpToPx(Integer.parseInt(sharedPreferences.getString("fontSize2", "10"))));
+            mTex.setText(myData.getSale());
+//            mTex.setTypeface(customFont);
             mTex.setGravity(Gravity.RIGHT);
-            mTex.setTextColor(getResources().getColor(R.color.textColorOPT2));
+//            mTex.setTextColor(getResources().getColor(R.color.textColorOPT2));
 
             insideCardLayout.addView(mTex);
-        }*/
+        }
         insideCardLayout.addView(dateText);
 
         mCard.addView(insideCardLayout);
 
         parentLayout.addView(mCard);
+
+        Uri gif = getMediaFileUri(requireContext(),Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/priceList/gifs/" + myData.photoLink + ".gif");
+
+        if (gif != null) {
+            Glide.with(requireContext())
+                    .load(gif)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
+                    .into(imageButton);
+        } else {
+            Glide.with(requireContext())
+                    .load(getMediaFileUri(requireContext(), Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/priceList/" + myData.photoLink + ".jpg"))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
+                    .into(imageButton);
+        }
+
     }
 
 
