@@ -62,8 +62,11 @@ public class DownloadActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(DownloadActivity.this);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        if (sharedPreferences.getBoolean("anyUpdates", false))
+            Toast.makeText(this, "Встановіть оновлення!", Toast.LENGTH_LONG).show();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);
@@ -123,6 +126,7 @@ public class DownloadActivity extends AppCompatActivity {
                 downloadVideos();
                 downloadPromotions();
                 downloadGifs();
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean("anyUpdates", false).apply();
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -370,6 +374,28 @@ public class DownloadActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public static void listAndDeleteFiles(String directoryPath) {
+        File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), directoryPath);
+
+        if (directory.exists() && directory.isDirectory()) {
+            File[] files = directory.listFiles();
+
+            if (files != null) {
+                for (File file : files) {
+                    if (file.getName().endsWith("-1.jpg") || file.getName().endsWith("-2.jpg") || file.getName().endsWith("-3.jpg")) {
+                        System.out.println("Знайдено файл: " + file.getName());
+
+                        if (file.delete()) {
+                            Log.d("Файл видалено: ", file.getName());
+                        } else {
+                            Log.d("Не вдалося видалити: ", file.getName());
+                        }
+                    }
+                }
+            }
+        }
     }
 
     void updateProgress() {

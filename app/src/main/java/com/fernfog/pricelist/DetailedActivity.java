@@ -51,7 +51,10 @@ public class DetailedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         SharedPreferences sharedPref = getSharedPreferences(
                 "MyPref", Context.MODE_PRIVATE);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(DetailedActivity.this);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        if (sharedPreferences.getBoolean("anyUpdates", false))
+            Toast.makeText(this, "Встановіть оновлення!", Toast.LENGTH_LONG).show();
 
         Intent intent = getIntent();
 

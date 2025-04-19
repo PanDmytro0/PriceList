@@ -45,4 +45,5 @@
     <string name="downloadPromotions">Скачать акции</string>
     <string name="downloadVideos">Скачать акции</string>
     <string name="downloadGifs">Скачать гифки</string>
+    <string name="updateAppButton">Обновить приложение</string>
 </resources>

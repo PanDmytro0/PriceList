@@ -121,6 +121,17 @@ public class FileDownloader {
         return downloadManager.enqueue(request);
     }
 
+    public long downloadApk(Context context, String fileUrl, String fileName) {
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(fileUrl));
+
+        request.setTitle(fileName);
+
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOCUMENTS, "priceList/apks/" + fileName);
+
+        DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        return downloadManager.enqueue(request);
+    }
+
     public static boolean deleteFileByPath(Context context, String filePath) {
         ContentResolver contentResolver = context.getContentResolver();
         Uri uriExternal = MediaStore.Files.getContentUri("external");

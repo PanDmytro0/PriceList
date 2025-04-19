@@ -46,5 +46,6 @@
     <string name="downloadPromotions">Завантажити акції</string>
     <string name="downloadVideos">Завантажити відео</string>
     <string name="downloadGifs">Завантажити гіфки</string>
+    <string name="updateAppButton">Оновити додаток</string>
 
 </resources>

@@ -18,12 +18,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import androidx.appcompat.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -46,6 +51,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class ListActivity extends AppCompatActivity {
 
@@ -71,10 +77,12 @@ public class ListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ListActivity.this);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         Toolbar myToolbar = findViewById(R.id.topBar);
         setSupportActionBar(myToolbar);
+
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         Uri file = getIntent().getParcelableExtra("file");
 
@@ -86,6 +94,24 @@ public class ListActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 sharedPreferencesEditor.putString("fontSize", task.getResult().getValue().toString());
+                sharedPreferencesEditor.apply();
+
+            }
+        });
+
+        mDatabase.child("частота_перевірки").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                sharedPreferencesEditor.putInt("frequencyUpdates", Integer.parseInt(task.getResult().getValue().toString()));
+                sharedPreferencesEditor.apply();
+
+            }
+        });
+
+        mDatabase.child("розмір_перевірки").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                sharedPreferencesEditor.putInt("sizeUpdates", Integer.parseInt(task.getResult().getValue().toString()));
                 sharedPreferencesEditor.apply();
 
             }
@@ -245,6 +271,9 @@ public class ListActivity extends AppCompatActivity {
                             viewPager.setUserInputEnabled(true);
                         }
                     }, delay);
+
+                    if (sharedPreferences.getBoolean("anyUpdates", false))
+                        Toast.makeText(getApplicationContext(), "Встановіть оновлення!", Toast.LENGTH_LONG).show();
                 }
             });
 
@@ -371,6 +400,208 @@ public class ListActivity extends AppCompatActivity {
         Log.d("changes", "" + changes);
 
         Log.wtf("data", skladi.toString());
+
+        SearchView searchView = findViewById(R.id.searchView);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                defadapter.removeAll();
+                defadapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), getLifecycle());
+                viewPager.setAdapter(defadapter);
+
+                try {
+                    ArrayList<MyData> arrayList = new ArrayList<>();
+                    int itemCount = 0;
+
+                    for (Row row : sheet) {
+                        String name = getCellValueAsString(row.getCell(0));
+                        if (name == null) name = "";
+
+                        if (name.equals("") && itemCount > 1) {
+                            addFragmentAndUpdateAdapter(arrayList, false);
+                            arrayList.clear();
+                            itemCount = 0;
+                        }
+
+                        if (!name.contains("Назва") && !name.contains("Прайс") && !name.equals("") && name.toLowerCase().contains(query.toLowerCase())) {
+                            String id = getCellValueAsString(row.getCell(3));
+                            String count = getCellValueAsString(row.getCell(4));
+                            String inPack = getCellValueAsString(row.getCell(6));
+                            String description = getCellValueAsString(row.getCell(12));
+                            String check = getCellValueAsString(row.getCell(10));
+                            String check__ = getCellValueAsString(row.getCell(11));
+                            String nameOfGroup = getCellValueAsString(row.getCell(19));
+                            String video = getCellValueAsString(row.getCell(20));
+                            String sale  = getCellValueAsString(row.getCell(29));
+
+                            if (check__.equals("+")) {
+                                MyData myData = new MyData(name, id, count, inPack, description, false, true, nameOfGroup);
+                                myData.setVideo(video);
+                                myData.setSale(sale);
+                                arrayList.add((MyData) myData.clone());
+                                itemCount++;
+                            } else if (check.equals("+")){
+                                MyData myData = new MyData(name, id, count, inPack, description, true, false, nameOfGroup);
+                                myData.setVideo(video);
+                                myData.setSale(sale);
+                                arrayList.add((MyData) myData.clone());
+                                itemCount++;
+                            } else {
+                                MyData myData = new MyData(name, id, count, inPack, description, nameOfGroup);
+                                myData.setVideo(video);
+                                myData.setSale(sale);
+                                arrayList.add((MyData) myData.clone());
+                                itemCount++;
+                            }
+
+                            if (itemCount == MAX_ELEMENTS_PER_FRAGMENT) {
+                                addFragmentAndUpdateAdapter(arrayList, false);
+                                arrayList.clear();
+                                itemCount = 0;
+                            }
+                        }
+                    }
+
+                    if (!arrayList.isEmpty()) {
+                        addFragmentAndUpdateAdapter(arrayList, false);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return true;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+
+                defadapter.removeAll();
+                defadapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), getLifecycle());
+                viewPager.setAdapter(defadapter);
+
+                try {
+                    ArrayList<MyData> arrayList = new ArrayList<>();
+                    final int[] itemCount = {0};
+                    final String[] dataN = {""};
+
+                    for (Row row : sheet) {
+
+                        try {
+                            String name = getCellValueAsString(row.getCell(0));
+                            dataN[0] = getCellValueAsString(row.getCell(13));
+
+                            String sklad = getCellValueAsString(row.getCell(23));
+
+                            boolean skladState = true;
+
+                            for (String i: sklad.split(",")) {
+                                if (sklad.isEmpty()) {
+                                    skladState = false;
+                                }
+                                else if (i.trim().contains(sharedPreferences.getString("sklad", ""))) {
+                                    skladState = false;
+                                }
+                            }
+
+                            if (skladState) {
+                                continue;
+                            }
+
+                            String[] groups = getCellValueAsString(row.getCell(18)).split(",");
+
+                            Collections.addAll(groupSet, groups);
+
+                            if (name.equals("") && itemCount[0] > 1) {
+                                addFragmentAndUpdateAdapter(arrayList, false);
+                                arrayList.clear();
+                                itemCount[0] = 0;
+                            }
+
+                            if (!name.contains("Назва") && !name.contains("Прайс") && !name.equals("")) {
+                                String id = getCellValueAsString(row.getCell(3));
+                                String count = getCellValueAsString(row.getCell(4));
+                                String inPack = getCellValueAsString(row.getCell(6));
+                                String description = getCellValueAsString(row.getCell(12));
+                                String check = getCellValueAsString(row.getCell(10));
+                                String check__ = getCellValueAsString(row.getCell(11));
+                                String nameOfGroup = getCellValueAsString(row.getCell(19));
+                                String video = getCellValueAsString(row.getCell(20));
+                                String sale  = getCellValueAsString(row.getCell(29));
+
+                                if (check__.equals("+")) {
+                                    MyData myData = new MyData(name, id, count, inPack, description, false, true, nameOfGroup);
+                                    myData.setVideo(video);
+                                    myData.setSale(sale);
+                                    arrayList.add((MyData) myData.clone());
+                                    itemCount[0]++;
+                                } else if (check.equals("+")){
+                                    MyData myData = new MyData(name, id, count, inPack, description, true, false, nameOfGroup);
+                                    myData.setVideo(video);
+                                    myData.setSale(sale);
+                                    arrayList.add((MyData) myData.clone());
+                                    itemCount[0]++;
+                                } else {
+                                    MyData myData = new MyData(name, id, count, inPack, description, nameOfGroup);
+                                    myData.setVideo(video);
+                                    myData.setSale(sale);
+                                    arrayList.add((MyData) myData.clone());
+                                    itemCount[0]++;
+                                }
+
+                                if (itemCount[0] == MAX_ELEMENTS_PER_FRAGMENT) {
+                                    addFragmentAndUpdateAdapter(arrayList, false);
+                                    arrayList.clear();
+                                    itemCount[0] = 0;
+                                }
+                            }
+
+                            if (!dataN[0].equals("")) {
+                                boolean dataSkladState = true;
+
+                                for (String i: sklad.split(",")) {
+                                    if (sklad.isEmpty()) {
+                                        dataSkladState = false;
+                                    }
+                                    else if (i.trim().contains(sharedPreferences.getString("sklad", ""))) {
+                                        dataSkladState = false;
+                                    }
+                                }
+
+                                if (dataSkladState) {
+                                    continue;
+                                } else {
+                                    ArrayList<MyData> arrayList_ = new ArrayList<>();
+                                    arrayList_.add(new MyData(dataN[0]));
+                                    addFragmentAndUpdateAdapter(arrayList_, true);
+                                }
+                            }
+
+                        } catch (Exception e) {
+
+                        }
+
+                    }
+
+                    if (!arrayList.isEmpty()) {
+                        addFragmentAndUpdateAdapter(arrayList, false);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                return false;
+            }
+        });
+
     }
 
     private void addFragmentAndUpdateAdapter(ArrayList<MyData> arrayList, boolean a) {

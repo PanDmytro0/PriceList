@@ -19,7 +19,7 @@ public class PassActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pass);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(PassActivity.this);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         TextInputLayout textInputLayout = findViewById(R.id.passEditText);
         String pass = sharedPreferences.getString("pass", "");
         String passChange = sharedPreferences.getString("passChange", "");
